@@ -1,0 +1,337 @@
+
+/* ===== Reset / Cơ bản ===== */
+* {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #edf0f4;
+      color: #111;
+    }
+    /* ===== Layout chính ===== */
+    .dashboard {
+      display: grid;
+      grid-template-columns: 60% 40%;
+      grid-template-rows: auto auto;
+      gap: 20px;
+      padding: 20px;
+    }
+    /* Card chung */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    /* ========= Sales Overview (Mô phỏng xe di chuyển) ========= */
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 200px;
+    
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .road {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60px;
+      background-image: repeating-linear-gradient(
+        to right,
+        #444 0px,
+        #444 40px,
+        #666 40px,
+        #666 80px
+      );
+      background-position: 0 0;
+      background-repeat: repeat-x;
+    }
+    .scooter {
+      width: 300px;
+      height: 40px;
+      background: red;
+      border-radius: 10px;
+      position: absolute;
+      bottom: 30px;
+      left: 40%;
+      z-index: 10;
+      transition: transform 0.2s;
+    }
+    .wheel {
+      width: 70px;
+      height: 70px;
+      background: #222;
+      border-radius: 50%;
+      position: absolute;
+      bottom: -35px;
+      left: 115px;
+      animation-name: spin;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+      animation-duration: 1s;
+      animation-direction: normal;
+      overflow: hidden;
+      box-shadow: inset 0 0 5px #000;
+    }
+    .wheel.reverse {
+      animation-direction: reverse;
+    }
+    @keyframes spin {
+      0%   { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .wheel-marker {
+      width: 8px;
+      height: 35px;
+      background: white;
+      position: absolute;
+      top: 17px;
+      left: 31px;
+      border-radius: 2px;
+    }
+    .load {
+      width: 20px;
+      height: 30px;
+      background: #964B00;
+      border-radius: 5px;
+      position: absolute;
+      bottom: 40px;
+    }
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    button {
+      padding: 8px 12px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    input[type=range] {
+      width: 200px;
+    }
+    
+    /* ========= Top-Right Cards ========= */
+    .top-right {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    .performance-index h2 {
+      margin-bottom: 10px;
+    }
+    .performance-score {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: right;
+      margin-bottom: 10px;
+    }
+    .sensor-panel {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+    .sensor {
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid #aaa;
+      border-radius: 10px;
+      box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+    .bar-chart {
+      display: flex;
+      gap: 5px;
+      align-items: flex-end;
+      height: 80px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 0 10px;
+    }
+    .bar-chart div {
+      flex: 1;
+      background: #ccc;
+      transition: 0.3s ease;
+    }
+    .convert-rate {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .circle-wrapper {
+      position: relative;
+      width: 120px;
+      height: 120px;
+    }
+    .circle-chart {
+      transform: rotate(-90deg);
+      width: 100%;
+      height: 100%;
+    }
+    .bg {
+      stroke: #eee;
+      stroke-width: 4;
+      fill: none;
+    }
+    .fg {
+      stroke: #d14130;
+      stroke-width: 4;
+      fill: none;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      transition: stroke-dashoffset 1s ease-out;
+    }
+    .circle-label {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .circle-label strong {
+      font-size: 18px;
+    }
+    
+    /* ========= Customer Call ========= */
+    .customer-call {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+    .call-header {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    .call-subtitle {
+      font-size: 14px;
+    }
+    .call-actions {
+      display: flex;
+      gap: 10px;
+    }
+    .accept {
+      background: #fff;
+      color: #d14130;
+    }
+    .decline {
+      background: transparent;
+      border: 2px solid #fff;
+      color: #fff;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+    }
+    .call-info {
+      background: #fff;
+      color: #333;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    /* CAN Frame Log được chuyển vào Customer Call */
+    .can-log {
+      width: 100%;
+      background: #111;
+      color: #0f0;
+      padding: 15px;
+      height: 300px;
+      overflow-y: auto;
+      font-family: monospace;
+      border: 1px solid #555;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+    
+    /* ========= Sales Target Card (chứa PWM) ========= */
+    .sales-target h2 {
+      margin-bottom: 10px;
+    }
+    .pwm-section {
+      background: #111;
+      color: #fff;
+      width: 100%;
+      padding: 30px 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+    canvas {
+      background: #222;
+      border: 1px solid #555;
+      margin-top: 20px;
+      width: 100%;
+      height: 170px;
+    }
+    .control {
+      margin-top: 10px;
+    }
+
+
+
+    .can-frame {
+      background: #fff;
+      padding: 15px 20px;
+      margin: 5px 0;
+      border-radius: 8px;
+      font-family: Arial, sans-serif;
+      font-size: 18px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .label {
+      font-weight: bold;
+      margin-right: 8px;
+    }
+    .id {
+      color: #0b6efd;
+      font-weight: bold;
+      font-family: 'Courier New', monospace;
+    }
+    .dlc {
+      font-family: 'Courier New', monospace;
+      font-weight: bold;
+    }
+    .data {
+      font-family: 'Courier New', monospace;
+    }
+    .data-byte {
+      padding: 2px 6px;
+      margin-right: 6px;
+      border-radius: 4px;
+      background: #e0e0e0;
+      display: inline-block;
+      font-weight: normal;
+      color: #333;
+      user-select: all;
+    }
+    .data-byte.command {
+      color: #c0392b;
+      font-weight: bold;
+      background: #fceae9;
+    }
+    .data-byte.speed {
+      color: #2980b9;
+      font-weight: bold;
+      background: #d0e6fb;
+    }
+    .note {
+      margin-top: 12px;
+      font-style: italic;
+      color: #555;
+    }

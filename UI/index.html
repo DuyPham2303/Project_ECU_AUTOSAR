@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Sales Dashboard - Bảng điều khiển bán hàng</title>
+
+  <!-- Chèn file CSS bên ngoài để tạo style cho trang -->
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+
+<body>
+  <!-- Container chính của toàn bộ dashboard -->
+  <div class="dashboard">
+
+    <!-- ====== Hàng 1, Cột 1: Mô phỏng xe di chuyển (Sales Overview) ====== -->
+    <section class="sales-overview card">
+      <!-- Khu vực mô phỏng cảnh vật và xe -->
+      <div class="scene">
+        <!-- Đường đi (road) -->
+        <div class="road" id="road"></div>
+
+        <!-- Xe scooter -->
+        <div class="scooter" id="scooter">
+          <!-- Bánh xe -->
+          <div class="wheel" id="wheel">
+            <!-- Marker trên bánh xe để tạo hiệu ứng quay -->
+            <div class="wheel-marker"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Các điều khiển điều chỉnh mô phỏng xe -->
+      <div class="controls">
+        <label for="speed" id="speed-motor">Tốc độ (m/s):</label>
+        <!-- Thanh trượt tốc độ xe -->
+        <input type="range" id="speed" min="0.5" max="5" value="2" step="0.1" />
+
+        <!-- Các nút điều khiển -->
+        <button onclick="addLoad()">➕ Thêm vật</button>
+        <button onclick="removeLoad()">➖ Gỡ vật</button>
+        <button onclick="turnLeft()">⬅️ Trái</button>
+        <button onclick="turnRight()">➡️ Phải</button>
+      </div>
+    </section>
+
+    <!-- ====== Hàng 1, Cột 2: Các thẻ hiển thị thông số ====== -->
+    <div class="top-right">
+
+      <!-- Thẻ Hiệu suất động cơ: Hiển thị các cảm biến -->
+      <section class="performance-index card">
+        <h2>Thông số động cơ</h2>
+
+        <!-- Bảng panel cảm biến -->
+        <div class="sensor-panel">
+          <!-- Cảm biến điện áp -->
+          <div class="sensor">
+            <h4>Điện áp</h4>
+            <div id="voltage">–</div>
+          </div>
+
+          <!-- Cảm biến dòng điện -->
+          <div class="sensor">
+            <h4>Dòng điện</h4>
+            <div id="current">–</div>
+          </div>
+
+          <!-- Cảm biến mô-men xoắn -->
+          <div class="sensor">
+            <h4>Mô-men</h4>
+            <div id="torque">–</div>
+          </div>
+
+          <!-- Hiển thị số lượng tải (vật trên xe) -->
+          <div class="sensor">
+            <h4>Tải</h4>
+            <div id="load-count">–</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Thẻ Tỉ lệ chuyển đổi nhiệt độ -->
+      <section class="convert-rate card">
+        <div class="circle-wrapper">
+          <!-- Biểu đồ vòng tròn SVG cho tỉ lệ chuyển đổi -->
+          <svg viewBox="0 0 36 36" class="circle-chart">
+            <circle class="bg" cx="18" cy="18" r="16"></circle>
+            <circle class="fg" cx="18" cy="18" r="16" id="convert-circle"></circle>
+          </svg>
+
+          <!-- Nhãn vòng tròn hiển thị phần trăm -->
+          <div class="circle-label">
+            <strong id="convert-percent">–</strong>
+            <div>Nhiệt độ</div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- ====== Hàng 2, Cột 1: Log khung CAN ====== -->
+    <section class="customer-call card">
+      <div class="call-header">CAN Frame Log</div>
+
+      <div class="can-log"
+        style="display: flex; flex-direction: column; height: 300px; border: 1px solid #ccc; padding: 10px; box-sizing: border-box;">
+        <!-- Khu vực log hiển thị các dòng CAN -->
+        <div id="can-log"
+          style="flex-grow: 1; overflow-y: auto; border: 1px solid #ddd; padding: 8px; margin-bottom: 10px; font-family: monospace; font-size: 14px;">
+        </div>
+
+        <!-- Form nhập liệu nằm dưới cùng, full chiều ngang -->
+        <form id="can-form" onsubmit="return sendCanCode();" style="display: flex; gap: 0;">
+          <input type="text" id="can-code" name="can-code" placeholder="Nhập mã CAN (ví dụ: 0x1A3F)" style="
+          flex-grow: 1;
+          padding: 8px 12px;
+          font-size: 14px;
+          border: 1px solid #ccc;
+          border-right: none;
+          border-radius: 4px 0 0 4px;
+          box-sizing: border-box;
+        " />
+          <button type="submit" style="
+          padding: 0 20px;
+          font-size: 14px;
+          border: 1px solid #28a745;
+          background-color: #28a745;
+          color: white;
+          cursor: pointer;
+          border-radius: 0 4px 4px 0;
+          transition: background-color 0.3s ease;
+          box-sizing: border-box;
+        " onmouseover="this.style.backgroundColor='#218838'" onmouseout="this.style.backgroundColor='#28a745'">
+            Gửi
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ====== Hàng 2, Cột 2: Mô phỏng PWM - Sóng Vuông ====== -->
+    <section class="sales-target card">
+      <h2>Mô phỏng PWM - Sóng Vuông</h2>
+
+      <div class="pwm-section">
+        <!-- Canvas dùng để vẽ sóng PWM -->
+        <canvas id="canvas" height="200"></canvas>
+      </div>
+    </section>
+
+    <!-- ====== Hàng 3, Cột 1: CAN Frame Ví dụ cho Động cơ BOSCH ====== -->
+    <section class="can-protocol card">
+      <div class="can-frame">
+        <span class="label">[EVCU]</span>
+        <span class="label">ID:</span>
+        <span class="id">0x3F0</span>
+        <span class="label" style="margin-left:20px;">DLC:</span>
+        <span class="dlc">8</span>
+        <span class="label" style="margin-left:20px;">Data:</span>
+        <span class="data">
+          <span class="data-byte command">03</span>
+          <span class="data-byte speed">13</span>
+          <span class="data-byte speed">BD</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+        </span>
+      
+        <div class="note">
+          Mã <strong>03</strong> là mã lệnh <em>đặt tốc độ</em>, <strong>13 BD</strong> là giá trị tốc độ đặt (hex 0x13BD = 5069 decimal = 50.69 km/h)
+        </div>
+      </div>
+
+      <div class="can-frame">
+        <span class="label">[EVCU]</span>
+        <span class="label">ID:</span>
+        <span class="id">0x3F0</span>
+        <span class="label" style="margin-left:20px;">DLC:</span>
+        <span class="dlc">8</span>
+        <span class="label" style="margin-left:20px;">Data:</span>
+        <span class="data">
+          <span class="data-byte command">04</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+          <span class="data-byte">00</span>
+        </span>
+      
+        <div class="note">Mã <strong>04</strong> là mã lệnh <em>tắt động cơ</em></div>
+      </div>
+    </section>
+
+    <!-- ====== Hàng 3, Cột 2: Thông số Động cơ BOSCH Hub-Motor ====== -->
+    <section class="engine-stats card">
+      <h2>Thông số Động cơ BOSCH Hub-Motor</h2>
+      <table>
+        <tbody>
+          <tr><td>Điện áp định mức</td><td>60 V</td></tr>
+          <tr><td>Công suất định mức</td><td>1.2 kW</td></tr>
+          <tr><td>Công suất đỉnh</td><td>1.95 kW</td></tr>
+          <tr><td>Mô-men xoắn cực đại</td><td>120 Nm</td></tr>
+          <tr><td>Dòng định mức</td><td>≈ 20 A</td></tr>
+          <tr><td>Dòng đỉnh</td><td>≈ 32.5 A</td></tr>
+          <tr><td>Tốc độ tối đa</td><td>75 km/h (~924 rpm)</td></tr>
+          <tr><td>Nhiệt độ cuộn dây tối đa</td><td>155 °C</td></tr>
+        </tbody>
+      </table>
+    </section>
+  </div>
+
+  <!-- Chèn file JavaScript bên ngoài để xử lý tương tác -->
+  <script src="/script.js"></script>
+</body>
+
+</html>

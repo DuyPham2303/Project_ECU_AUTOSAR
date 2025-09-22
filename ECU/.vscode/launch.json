@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug App",
+      "type": "cppdbg",
+      "request": "launch",
+       "program": "${workspaceFolder}/build/ecu_sim.exe",
+      "args": [""],
+      "stopAtEntry": true,
+      "preLaunchTask": "CMake Build",   
+      "cwd":  "${workspaceFolder}",
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:\\mingw-w64\\mingw32\\bin\\gdb.exe",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}
