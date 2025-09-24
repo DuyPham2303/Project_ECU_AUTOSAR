@@ -1,0 +1,3 @@
+C:\mingw-w64\mingw32\bin\cmake.exe -E rm -f CMakeFiles\ecu_sim.dir/objects.a
+C:\mingw-w64\mingw32\bin\ar.exe qc CMakeFiles\ecu_sim.dir/objects.a @CMakeFiles\ecu_sim.dir\objects1.rsp
+C:\mingw-w64\mingw32\bin\gcc.exe -g -O0 -Wl,--whole-archive CMakeFiles\ecu_sim.dir/objects.a -Wl,--no-whole-archive -o ecu_sim.exe -Wl,--out-implib,libecu_sim.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\ecu_sim.dir\linkLibs.rsp

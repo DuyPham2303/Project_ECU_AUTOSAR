@@ -5,10 +5,6 @@
 
 /* ================== SR Buffers & Flags ================== */
 
-/* VcuCmd_s từ COM (Rotation + StopReq + TargetSpeed) */
-static VcuCmd_s VcuCmd_Com = {.Rotation = ROT_STOP,.StopReq = 0,.TargetSpeed_RPM = 0};
-static boolean  VcuCmd_ComUpdated = FALSE;
-
 /* EngineSpeed từ COM (rpm) */
 static uint16  s_ComEngineSpeedRpm = 0u;
 static boolean s_ComSpeedUpdated   = FALSE;
@@ -22,9 +18,9 @@ static ActuatorCmd_s s_ActuatorCmd = {0};
 static boolean       s_ActCmdUpd   = FALSE;
 
 /* (nội bộ RTE) COM cập nhật */
-static void Rte_Com_Update_VcuCmdFromPdu(){
+/* static void Rte_Com_Update_VcuCmdFromPdu(){
     
-}
+} */
 /* ================== Lifecycle ================== */
 void Rte_Init(void)
 {
@@ -57,12 +53,7 @@ void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc)
     printf("[RTE] EngineSpeedFromPdu: rpm=%u (bytes %02X %02X)\n",
            (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
 }
-/* ===== SR: VcuCmd_S (VcuCmd → MotorCtrl) ===== */
-Std_ReturnType Rte_Read_VcuCmdIn_RPort_VcuCmd(VcuCmd_s* v){
-    if(!v) return E_NOT_OK;
-    *v = VcuCmd_Com;
-    return VcuCmd_ComUpdated ? E_OK : E_NOT_OK;   
-}
+
 /* ================== SR: EngineSpeed (COM → MotorCtrl) ================== */
 Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm)
 {

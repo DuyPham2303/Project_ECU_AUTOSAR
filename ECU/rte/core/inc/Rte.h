@@ -14,14 +14,8 @@ void Rte_Run_10ms_Batch();
 /* COM gọi hook này sau khi decode PDU EngineSpeed */
 void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc);
 
-/* ===== COM → RTE: VcuCmd_s ===== */
-/* COM gọi để ghi VcuCmd_s lên Rte */
-Std_ReturnType Rte_Write_VcuCmdIn_PPort_VcuCmd(VcuCmd_s v); 
-/* ===== SR: VcuCmd_S (VcuCmd → MotorCtrl) ===== */
-Std_ReturnType Rte_Read_VcuCmdIn_RPort_VcuCmd(VcuCmd_s* v); 
-
 /* SR buffer cho EngineSpeed từ COM */
-Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm); //
+Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm); //gọi nội bộ trong RTE để cập nhật local buffer
 Std_ReturnType Rte_Read_MotorCtrl_RPort_EngineSpeed(uint16* rpm);
 
 /* ===== SR: Meas (MotorFbAcq → MotorCtrl) ===== */

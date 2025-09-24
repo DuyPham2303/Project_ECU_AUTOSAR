@@ -127,6 +127,7 @@ void InitTask(void);
 void Task_10ms(void);
 void Task_100ms(void);
 void Task_Com(void);
+void Task_Can(void);
 
 #ifdef __cplusplus
 }

@@ -16,11 +16,11 @@ void ShutdownHook(StatusType e)
 void PreTaskHook(void)
 {
     /* Có thể chèn đo thời gian, trace context switch... */
-    printf("[Os] : Pre called task\n");
+    //printf("[Os] : Pre called task\n");
 }
 
 void PostTaskHook(void)
 {
     /* Tương tự PreTaskHook */
-    printf("[Os] : Post called task\n");
+    //printf("[Os] : Post called task\n");
 }

@@ -64,7 +64,7 @@ int csv_getInt(const char* key, int* out){
         if(strcmp(k,key)==0){
             *out = atoi(v);
             fclose(f);
-            printf("[CSV] READ %s=%d\n", key, *out);
+            //printf("[CSV] READ %s=%d\n", key, *out);
             return 0;
         }
     }

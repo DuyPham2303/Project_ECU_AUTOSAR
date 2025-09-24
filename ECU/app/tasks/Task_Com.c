@@ -1,6 +1,7 @@
 #include "Os.h"
 #include <stdio.h>
 #include "Rte.h"
+#include "Rte_batch.h"
 /* Task theo sự kiện: chờ EV_RX / EV_TX từ “ISR mô phỏng” (Com feeder) */
 TASK(Task_Com)
 {
@@ -19,7 +20,7 @@ TASK(Task_Com)
         }
         if (ev & EV_TX) {
             (void)ClearEvent(EV_TX);
-            Rte_Com_TxBatch();   /* pack từ RTE buffers → BSW/COM gửi đi */
+            //Rte_Com_TxBatch();   /* pack từ RTE buffers → BSW/COM gửi đi */
         }
     }
 

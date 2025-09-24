@@ -14,7 +14,7 @@ static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
         return;
     }
     /* Big-endian (Motorola): rpm = (data[0] << 8) | data[1] */
-    uint16 rpm = (uint16)((((uint16)data[0]) << 8) | ((uint16)data[1]));
+    uint16 rpm = (uint16)((((uint16)data[0]) << 8) | ((uint16)data[1])); //quy đổi sai từ Hex -> Dec
 
     //cập nhật vào buffer sẵn sàng dể Rte sử dụng
     s_engineSpeedRpm = rpm;

@@ -42,6 +42,7 @@ enum
     Task_10ms_ID,      /* Chu kỳ 10 ms: SchM_MainFunction_10ms + Rte_Run_10ms_Batch    */
     Task_100ms_ID,     /* Chu kỳ 100 ms: SchM_MainFunction_100ms + Rte_Run_100ms_Batch */
     Task_Com_ID,       /* Extended Task: chờ EV_RX/EV_TX để xử lý COM                  */
+    Task_Can_ID,       /* mô phỏng ngắt Can để đọc BUS CAN */
     TASK_COUNT         /* Số lượng Task (luôn để cuối cùng)                            */
 };
 
@@ -87,6 +88,7 @@ DECLARE_TASK(InitTask);
 DECLARE_TASK(Task_10ms);
 DECLARE_TASK(Task_100ms);
 DECLARE_TASK(Task_Com);
+DECLARE_TASK(Task_Can);
 
 #ifdef __cplusplus
 }

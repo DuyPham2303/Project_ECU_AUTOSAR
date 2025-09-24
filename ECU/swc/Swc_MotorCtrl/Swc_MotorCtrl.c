@@ -50,7 +50,8 @@ void Swc_MotorCtrl_Run10ms(void)
     out.duty_pct = clamp_u16((uint16)(rpm_com / 50u), 100u);    //clamp duty 0 - 100
 
     //ghi duty xuống rte -> cho phép tầng chấp hành truy cập để ghi xuống IoHwAb
-    (void)Rte_Write_ActuatorCmd(out);
+    //(void)Rte_Write_ActuatorCmd(out);
     printf("[Swc_MotorCtrl] rpm_com=%u -> duty=%u%% dir=%d\n",
            (unsigned)rpm_com, (unsigned)out.duty_pct, (int)out.dir);
+    fflush(stdout); 
 }

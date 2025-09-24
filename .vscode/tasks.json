@@ -1,0 +1,57 @@
+{
+    "version": "2.0.0",
+    //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
+    "tasks": [
+        {
+            "label": "CMake Configure",
+            "type": "shell",
+            "command": "cmake",
+            "args": [
+                "-G",
+                "MinGW Makefiles",
+                "${workspaceFolder}/ECU/app"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/ECU/build"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+    //task tự động chạy makefile để generate file thực thi 
+        {
+            "label": "CMake Build",
+            "type": "shell",
+            "command": "mingw32-make",
+            "options": {
+                "cwd": "${workspaceFolder}/ECU/build"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$gcc"
+        },
+    //task để chạy chương trình (.exe) tự động 
+        {
+            "label": "Run App",
+            "type": "shell",
+            "command": "${workspaceFolder}/ECU/build/ecu_sim.exe",
+            "group": "none",
+            "problemMatcher": []
+        },
+    //task để xóa toàn bộ nội dung build folder
+        {
+            "label": "Clean Build Folder",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Remove-Item -Path \"${workspaceFolder}\\ECU\\build\\*\" -Recurse -Force -ErrorAction SilentlyContinue"
+            ],
+            "problemMatcher": []
+        },
+    ]
+    
+}

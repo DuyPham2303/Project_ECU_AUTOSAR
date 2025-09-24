@@ -14,8 +14,9 @@ TASK(InitTask)
 
     /* BSW + RTE khởi động */
     // SchM_Init();
-    // Com_Init();
-    // Rte_Start();
+    //Com_Init();
+    //Rte_Start();
+    Rte_Init();
     // Rte_Init_PowerOnBatch();      /* gọi *_Init của các SWC */
 
     /* === Bắt nhịp hệ thống bằng Alarm === */
@@ -25,8 +26,8 @@ TASK(InitTask)
     if(SetRelAlarm(Alarm_10ms, 1u, 10u) == E_OK){
         printf("Initialized Alarm 10ms\n");
     }
-    if(SetRelAlarm(Alarm_100ms, 10u, 100u) == E_OK){
-        printf("Initialized Alarm 100ms\n");   
-    }
+    // if(SetRelAlarm(Alarm_100ms, 10u, 100u) == E_OK){
+    //     printf("Initialized Alarm 100ms\n");   
+    // }
     TerminateTask();
 }
