@@ -3,8 +3,7 @@
 
 #include "Std_Types.h"
 #include "IoHwAb.h" /* dùng Direction_e; map CS xuống IoHwAb */
-//typedef Meas_s Rte_Meas_s;
-//typedef ActuatorCmd_s Rte_ActuatorCmd_s;
+
 /* ===== Data contract còn dùng ===== */
 
 /* Đo lường tổng hợp (MotorFbAcq publish) */

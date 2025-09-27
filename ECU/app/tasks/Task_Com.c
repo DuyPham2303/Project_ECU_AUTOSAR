@@ -24,6 +24,6 @@ TASK(Task_Com)
         }
     }
 
-    printf("[Task_Com] running...\n");
+    //printf("[Task_Com] running...\n");
     /* Không TerminateTask vì đây là task vòng lặp sự kiện */
 }

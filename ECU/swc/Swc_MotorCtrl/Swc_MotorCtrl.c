@@ -3,7 +3,13 @@
 #include <stdio.h>
 
 /* Cấu hình demo: map rpm từ COM -> duty% (đơn giản để quan sát luồng) */
-static inline uint16 clamp_u16(uint16 v, uint16 max) { return (v > max) ? max : v; }
+static inline uint16 clamp_u16(uint16 v, uint16 max) { 
+    const uint16 MAX_RPM = 924;
+    uint16 duty = (max * v)/ MAX_RPM;
+    duty = (v > MAX_RPM) ? max : duty; 
+    return duty;
+}
+
 
 void Swc_MotorCtrl_Init(void)
 {
@@ -30,6 +36,7 @@ void Swc_MotorCtrl_Run10ms(void)
     //đọc rpm từ cảm biến 
     (void)Rte_Read_Meas(&meas);           /* có thể dùng để bảo vệ/giới hạn */
 
+
     //triển khai áp luật an toàn nếu cần 
     /* 
         - kiểm tra Timeout : 
@@ -47,11 +54,10 @@ void Swc_MotorCtrl_Run10ms(void)
     out.dir = DIR_FWD;  //giả sử dir mặc định 
 
     /* map đơn giản để demo (bạn thay bằng luật thật của mình) */
-    out.duty_pct = clamp_u16((uint16)(rpm_com / 50u), 100u);    //clamp duty 0 - 100
+    out.duty_pct = clamp_u16(rpm_com,100u);    //clamp duty 0 - 100
 
     //ghi duty xuống rte -> cho phép tầng chấp hành truy cập để ghi xuống IoHwAb
-    //(void)Rte_Write_ActuatorCmd(out);
+    (void)Rte_Write_ActuatorCmd(out);
     printf("[Swc_MotorCtrl] rpm_com=%u -> duty=%u%% dir=%d\n",
            (unsigned)rpm_com, (unsigned)out.duty_pct, (int)out.dir);
-    fflush(stdout); 
 }

@@ -113,6 +113,7 @@ static OsAlarmCtl s_alarm[ALARM_COUNT] =
     {
         [Alarm_10ms] = {.id = Alarm_10ms},
         [Alarm_100ms] = {.id = Alarm_100ms},
+        [Alarm_500ms] = {.id = Alarm_500ms},
 };
 
 /* ****************************************************************************************
@@ -242,13 +243,16 @@ static void *OS_AlarmThread(void *arg)
         {
         case Alarm_10ms:
             // printf("[Os] :Alarm thread 10ms\n");
-            (void)ActivateTask(Task_10ms_ID);
-            (void)ActivateTask(Task_Can_ID);
+            //(void)ActivateTask(Task_10ms_ID);
             break;
         case Alarm_100ms:
             // printf("[Os] :Alarm thread 100ms\n");
-            (void)ActivateTask(Task_100ms_ID);
+            //(void)ActivateTask(Task_100ms_ID);
+            //(void)ActivateTask(Task_Can_ID);
             break;
+        case Alarm_500ms:
+            (void)ActivateTask(Task_10ms_ID);
+            (void)ActivateTask(Task_Can_ID);
         default:
             /* Không hỗ trợ alarm khác trong bản tối giản */
             break;

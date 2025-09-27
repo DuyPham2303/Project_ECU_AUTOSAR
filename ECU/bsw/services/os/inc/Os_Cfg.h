@@ -66,6 +66,7 @@ enum
 {
     Alarm_10ms = 0,    /* Kích Task_10ms mỗi 10 ms (sau start_ms) */
     Alarm_100ms,       /* Kích Task_100ms mỗi 100 ms (sau start_ms) */
+    Alarm_500ms,
     ALARM_COUNT        /* Số lượng Alarm (luôn để cuối cùng)        */
 };
 

@@ -7,6 +7,6 @@ TASK(Task_10ms)
 {
     // SchM_MainFunction_10ms();   /* ví dụ: Com_MainFunctionRx/Tx, IoHwAb_* */
     Rte_Run_10ms_Batch();       /* ví dụ: Swc_MotorFbAcq_Run10ms, Swc_MotorCtrl_Run10ms... */
-    printf("[Task_10ms] running...\n");
+    //printf("[Task_10ms] running...\n");
     //TerminateTask();
 }

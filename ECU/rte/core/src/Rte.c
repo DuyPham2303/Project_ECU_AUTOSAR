@@ -21,6 +21,9 @@ static boolean       s_ActCmdUpd   = FALSE;
 /* static void Rte_Com_Update_VcuCmdFromPdu(){
     
 } */
+
+static const uint16 MAX_RPM = 924;
+static const uint8 MAX_KMH = 75;
 /* ================== Lifecycle ================== */
 void Rte_Init(void)
 {
@@ -46,7 +49,13 @@ void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc)
         printf("[RTE] EngineSpeedFromPdu: DLC=%u <2 -> bỏ\n", (unsigned)dlc);
         return;
     }
-    uint16 rpm = (uint16)((((uint16)data[0]) << 8) | (uint16)data[1]);
+    uint16 raw = (uint16)((((uint16)data[2]) << 8) | (uint16)data[1]);
+
+    uint16 kmh = raw/100;
+    
+    if(kmh > MAX_KMH) kmh = MAX_KMH;
+
+    uint16 rpm = (MAX_RPM * kmh) / MAX_KMH;
 
     //ghi vào nội bộ RTE -> Cho phép các Swc truy cập thông qua SR interface
     (void)Rte_Write_Com_PPort_EngineSpeed(rpm);

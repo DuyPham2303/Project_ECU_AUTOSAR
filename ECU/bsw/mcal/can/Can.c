@@ -35,7 +35,7 @@ static boolean parse_can_line(char* line, uint32* outId, uint8* outDlc, uint8 ou
     char* end = NULL;
     unsigned long id = strtoul(p, &end, 0);
     if (end == p) return FALSE; /* không parse được */
-    printf("parsed %d OK\n",id);
+    //printf("parsed %ld OK\n",id);
     p = skip_spaces(end);
 
     /* parse dlc */
@@ -43,7 +43,7 @@ static boolean parse_can_line(char* line, uint32* outId, uint8* outDlc, uint8 ou
     if (end == p) return FALSE;
     if (dlc_ul > 8ul) dlc_ul = 8ul; /* giới hạn */
     p = skip_spaces(end);
-    printf("parsed %d OK\n",dlc_ul);
+    //printf("parsed %ld OK\n",dlc_ul);
 
     /* parse dữ liệu theo dlc */
     uint8 dlc = (uint8)dlc_ul;
@@ -51,7 +51,7 @@ static boolean parse_can_line(char* line, uint32* outId, uint8* outDlc, uint8 ou
         unsigned long b = strtoul(p, &end, 16);
         if (end == p) return FALSE;
         outData[i] = (uint8)b;
-        printf("parsed data[%d] : %d OK\n",i,outData[i]);
+        //printf("parsed data[%d] : %ld OK\n",i,outData[i]);
         p = skip_spaces(end);
     }
     /* các byte còn lại (nếu dlc < 8) set 0 */
@@ -69,11 +69,13 @@ void Can_Init(void)
 
 void Can_MainFunction_Read(void)
 {
+    //buffer chứa chuỗi Can frame
     char frame_str[128];
-    printf("Enter Can_MainFunction_Read\n");
     /* đọc tất cả dòng còn lại cho channel "can" */
+    re_read:
+    //đợi đến khi đọc xong 
     while(csv_getString("can", frame_str, sizeof(frame_str)) == TRUE);
-    printf("[CAN] CSV: \"%s\"\n", frame_str);
+    //printf("[CAN] CSV: \"%s\"\n", frame_str);
 
     uint32 id = 0;
     uint8  dlc = 0;
@@ -85,19 +87,17 @@ void Can_MainFunction_Read(void)
     if (n >= sizeof(buf)) n = sizeof(buf) - 1;
     memcpy(buf, frame_str, n);
     buf[n] = '\0';
-
-    printf("before parsed : %s\n",buf);
     if (!parse_can_line(buf, &id, &dlc, data)) {
         printf("[CAN] Parse FAIL -> bỏ qua dòng\n");
         //continue;
+        memset(frame_str,0,sizeof(frame_str));
+        goto re_read;
     }
 
-    printf("[CAN] RX: ID=0x%X DLC=%u Data=", (unsigned)id, (unsigned)dlc);
+    //printf("[CAN] RX: ID=0x%X DLC=%u Data=", (unsigned)id, (unsigned)dlc);
 
     for (uint8 i = 0; i < dlc; i++) printf("%02X ", data[i]);
     printf("\n");
 
-    (void)CanIf_Receive(id, data, dlc);
-    //}
-    
+    (void)CanIf_Receive(id, data, dlc);    
 }

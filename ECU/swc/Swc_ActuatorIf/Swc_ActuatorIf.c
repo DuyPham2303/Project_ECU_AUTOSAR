@@ -25,7 +25,6 @@ void Swc_ActuatorIf_Run10ms(void)
         (void)Rte_Call_Actuation_SetPwm(a.duty_pct);
         printf("[Swc_ActuatorIf] APPLY dir=%d duty=%u%%\n",
                (int)a.dir, (unsigned)a.duty_pct);
-        fflush(stdout); 
     } else {
         /* không có lệnh mới → bỏ qua */
     }

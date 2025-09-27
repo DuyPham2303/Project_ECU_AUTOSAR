@@ -6,6 +6,9 @@
 static volatile uint16  s_engineSpeedRpm     = 0u;
 static volatile boolean s_engineSpeedUpdated = FALSE;
 
+static const uint16 MAX_RPM = 924;
+static const uint8 MAX_KMH = 75;
+
 /* decode mã CAN thành giá trị thực tế */
 static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
 {
@@ -14,8 +17,13 @@ static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
         return;
     }
     /* Big-endian (Motorola): rpm = (data[0] << 8) | data[1] */
-    uint16 rpm = (uint16)((((uint16)data[0]) << 8) | ((uint16)data[1])); //quy đổi sai từ Hex -> Dec
+    uint16 raw = (uint16)((((uint16)data[2]) << 8) | ((uint16)data[1])); 
 
+    uint16 kmh = raw/100;
+    
+    if(kmh > MAX_KMH) kmh = MAX_KMH;
+
+    uint16 rpm = (MAX_RPM * kmh) / MAX_KMH;
     //cập nhật vào buffer sẵn sàng dể Rte sử dụng
     s_engineSpeedRpm = rpm;
     s_engineSpeedUpdated = TRUE;

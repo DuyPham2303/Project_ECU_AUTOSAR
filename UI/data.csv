@@ -1,8 +1,8 @@
-temp,27.06
-voltage,59.32
-current,1.35
-torque,5.00
+temp,27.00
+voltage,59.44
+current,1.32
+torque,4.87
 rpm,0
-direction,0
-duty,0
-can,0x3F0 8 03 AB 10 00 00 00 00 00
+direction,1
+duty,87
+can,0

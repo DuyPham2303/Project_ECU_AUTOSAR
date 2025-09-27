@@ -89,7 +89,7 @@ int csv_getString(const char* key, char* buf, size_t buflen){
         if(strcmp(k,key)==0){
             strncpy(buf, v, buflen-1); buf[buflen-1]='\0';
             fclose(f);
-            printf("[CSV] READ %s=\"%s\"\n", key, buf);
+            //printf("[CSV] READ %s=\"%s\"\n", key, buf);
             return 0;
         }
     }

@@ -23,11 +23,14 @@ TASK(InitTask)
     //(void)SetRelAlarm(Alarm_10ms, 1u, 10u);
     //(void)SetRelAlarm(Alarm_100ms, 10u, 100u);
 
-    if(SetRelAlarm(Alarm_10ms, 1u, 10u) == E_OK){
-        printf("Initialized Alarm 10ms\n");
-    }
+    // if(SetRelAlarm(Alarm_10ms, 1u, 10u) == E_OK){
+    //     printf("Initialized Alarm 10ms\n");
+    // }
     // if(SetRelAlarm(Alarm_100ms, 10u, 100u) == E_OK){
     //     printf("Initialized Alarm 100ms\n");   
     // }
+    if(SetRelAlarm(Alarm_500ms, 10u, 500u) == E_OK){
+        printf("Initialized Alarm 500ms\n");   
+    }
     TerminateTask();
 }

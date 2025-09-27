@@ -13,9 +13,6 @@
 #include <errno.h>
 #include <pthread.h> // pthread_create, pthread_t
 #include <sys/types.h>
-//#include <sys/socket.h>
-//#include <netinet/in.h>
-//#include <arpa/inet.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
