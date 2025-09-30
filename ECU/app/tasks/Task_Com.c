@@ -18,10 +18,10 @@ TASK(Task_Com)
             (void)ClearEvent(EV_RX);
             Rte_Com_RxBatch();   /* xử lý gói tin nhận: map vào RTE buffers */
         }
-        if (ev & EV_TX) {
-            (void)ClearEvent(EV_TX);
-            //Rte_Com_TxBatch();   /* pack từ RTE buffers → BSW/COM gửi đi */
-        }
+        // if (ev & EV_TX) {
+        //     (void)ClearEvent(EV_TX);
+        //     Rte_Com_TxBatch();   /* pack từ RTE buffers → BSW/COM gửi đi */
+        // }
     }
 
     //printf("[Task_Com] running...\n");

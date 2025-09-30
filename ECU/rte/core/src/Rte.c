@@ -59,7 +59,7 @@ void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc)
 
     //ghi vào nội bộ RTE -> Cho phép các Swc truy cập thông qua SR interface
     (void)Rte_Write_Com_PPort_EngineSpeed(rpm);
-    printf("[RTE] EngineSpeedFromPdu: rpm=%u (bytes %02X %02X)\n",
+    printf("[RTE] EngineSpeedFromPdu: %u rpm (bytes %02X %02X)\n",
            (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
 }
 

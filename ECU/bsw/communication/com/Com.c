@@ -7,9 +7,13 @@ static volatile uint16  s_engineSpeedRpm     = 0u;
 static volatile boolean s_engineSpeedUpdated = FALSE;
 
 static const uint16 MAX_RPM = 924;
-static const uint8 MAX_KMH = 75;
+static const uint16 MAX_KMH = 75;
 
 /* decode mã CAN thành giá trị thực tế */
+void Com_Init(){
+    /* Goi5 PduR_Init(),Can_Init() nếu có -> in log */
+    printf("[Com module] : Initialized\n");
+}
 static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
 {
     if (dlc < 2u) {
@@ -23,13 +27,15 @@ static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
     
     if(kmh > MAX_KMH) kmh = MAX_KMH;
 
-    uint16 rpm = (MAX_RPM * kmh) / MAX_KMH;
+
+    uint16 rpm = (kmh * MAX_RPM) / MAX_KMH;
+
     //cập nhật vào buffer sẵn sàng dể Rte sử dụng
     s_engineSpeedRpm = rpm;
     s_engineSpeedUpdated = TRUE;
 
     printf("[Com] EngineSpeed unpack: %u rpm (bytes %02X %02X)\n",
-           (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
+           (unsigned)rpm,(unsigned)data[0], (unsigned)data[1]);
 }
 
 /* Xác định CAN ID tương ứng với loại dữ liệu cần xử lý */

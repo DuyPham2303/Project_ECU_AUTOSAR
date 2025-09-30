@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <unistd.h>
 //#include "SchM.h"
-//#include "Com.h"
+#include "Com.h"
 #include "Rte.h"
 
 /* InitTask: khởi tạo lớp BSW/RTE và đặt nhịp hệ thống */
@@ -14,7 +14,7 @@ TASK(InitTask)
 
     /* BSW + RTE khởi động */
     // SchM_Init();
-    //Com_Init();
+    Com_Init();
     //Rte_Start();
     Rte_Init();
     // Rte_Init_PowerOnBatch();      /* gọi *_Init của các SWC */

@@ -3,6 +3,31 @@
     //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
     "tasks": [
         {
+            "type": "cppbuild",
+            "label": "Build Server",
+            "command": "C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                "-g",
+                "-O0",
+                "${file}",
+                "-o",
+                "${fileDirname}\\${fileBasenameNoExtension}.exe",
+                "-lws2_32"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
+        },
+        {
             "label": "CMake Configure",
             "type": "shell",
             "command": "cmake",

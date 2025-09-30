@@ -16,6 +16,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 
+
 #define PORT 8080        // Cổng server sẽ lắng nghe
 #define BUFFER_SIZE 8192 // Kích thước bộ đệm cho dữ liệu nhận/gửi
 
@@ -27,19 +28,19 @@ char *read_file(const char *path)
     FILE *f = fopen(path, "rb");
     if (!f)
     {
-        perror("fopen");
+        printf("fopen");
         return NULL;
     }
     if (fseek(f, 0, SEEK_END) != 0)
     {
-        perror("fseek");
+        printf("fseek");
         fclose(f);
         return NULL;
     }
     long len = ftell(f);
     if (len < 0)
     {
-        perror("ftell");
+        printf("ftell");
         fclose(f);
         return NULL;
     }
@@ -49,13 +50,13 @@ char *read_file(const char *path)
     char *buf = malloc(len + 1);
     if (!buf)
     {
-        perror("malloc");
+        printf("malloc");
         fclose(f);
         return NULL;
     }
     if (fread(buf, 1, len, f) != (size_t)len)
     {
-        perror("fread");
+        printf("fread");
         free(buf);
         fclose(f);
         return NULL;
@@ -118,7 +119,7 @@ char *csv_to_json(const char *csv_path)
     FILE *f = fopen(csv_path, "r");
     if (!f)
     {
-        perror("fopen csv");
+        printf("fopen csv");
         return NULL;
     }
 
@@ -126,7 +127,7 @@ char *csv_to_json(const char *csv_path)
     char *json = malloc(cap);
     if (!json)
     {
-        perror("malloc json");
+        printf("malloc json");
         fclose(f);
         return NULL;
     }
@@ -162,7 +163,7 @@ char *csv_to_json(const char *csv_path)
             char *t = realloc(json, cap);
             if (!t)
             {
-                perror("realloc");
+                printf("realloc");
                 free(json);
                 free(key);
                 fclose(f);
@@ -212,7 +213,7 @@ int updateCsvWithJson(const char *csv_path, const char *json_str) {
     // 1) Load CSV cũ vào bộ nhớ
     FILE *fin = fopen(csv_path, "r");
     if (!fin) {
-        perror("fopen for read");
+        printf("fopen for read");
         return -1;
     }
 
@@ -278,7 +279,7 @@ int updateCsvWithJson(const char *csv_path, const char *json_str) {
     // 3) Ghi ngược lại file CSV, giữ nguyên thứ tự
     FILE *fout = fopen(csv_path, "w");
     if (!fout) {
-        perror("fopen for write");
+        printf("fopen for write");
         return -1;
     }
     for (int i=0; i<count; i++) {
@@ -305,9 +306,9 @@ void send_response(int client, const char *status,
                         "\r\n",
                         status, content_type, blen);
     if (send(client, header, hlen, 0) < 0)
-        perror("send header");
+        printf("send header");
     if (send(client, body, blen, 0) < 0)
-        perror("send body");
+        printf("send body");
 }
 
 // --- Xử lý POST /save-data --------------------------------------------------
@@ -368,8 +369,7 @@ void *client_thread(void *arg)
         SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
         if (sock == INVALID_SOCKET)
         {
-            perror("client socket");
-            closesocket(sock);
+            printf("client socket is Invalid");
             goto wait;
         }
 
@@ -379,7 +379,7 @@ void *client_thread(void *arg)
             .sin_addr.s_addr = inet_addr("127.0.0.1")};
         if (connect(sock, (struct sockaddr *)&srv, sizeof(srv)) == SOCKET_ERROR)
         {
-            perror("client connect");
+            printf("client connect error : %d\n",WSAGetLastError());
             closesocket(sock);
             goto wait;
         }
@@ -401,7 +401,7 @@ void *client_thread(void *arg)
         // Đọc response và bỏ qua (không in)
         char buf[BUFFER_SIZE];
         int recv_size = 0;
-        while ((recv_size = recv(sock, buf, sizeof(buf),0)) > 0)
+        while (recv_size = recv(sock, buf, sizeof(buf),0) > 0)
         {
             // discard
         }
@@ -417,7 +417,10 @@ int main()
 {
     WSADATA wsa;
 
-    SOCKET server_socket;
+    SOCKET server_socket,client_socket;
+
+    //khởi tạo đối tượng lưu trữ thông tin cấu hình socket
+    struct sockaddr_in server,client;
 
     //Khởi tạo thư viện Winsock
     WSAStartup(MAKEWORD(2, 2), &wsa);

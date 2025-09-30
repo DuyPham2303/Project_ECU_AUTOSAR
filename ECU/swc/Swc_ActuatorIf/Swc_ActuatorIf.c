@@ -21,8 +21,8 @@ void Swc_ActuatorIf_Run10ms(void)
         if (a.duty_pct > 100u) a.duty_pct = 100u;   /* clamp */
 
         //gọi dịch vụ để ghi Pwm + dir xuống IoHwAb
-        (void)Rte_Call_Actuation_SetDirection(a.dir);
-        (void)Rte_Call_Actuation_SetPwm(a.duty_pct);
+        //(void)Rte_Call_Actuation_SetDirection(a.dir);
+        //(void)Rte_Call_Actuation_SetPwm(a.duty_pct);
         printf("[Swc_ActuatorIf] APPLY dir=%d duty=%u%%\n",
                (int)a.dir, (unsigned)a.duty_pct);
     } else {

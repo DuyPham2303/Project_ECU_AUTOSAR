@@ -23,4 +23,5 @@ CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/canif/CanIf.h \
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorFbAcq/Swc_MotorFbAcq.h \
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.h \
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/csvlib/csv_io.h

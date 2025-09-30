@@ -242,13 +242,11 @@ static void *OS_AlarmThread(void *arg)
         switch (a->id)
         {
         case Alarm_10ms:
-            // printf("[Os] :Alarm thread 10ms\n");
             //(void)ActivateTask(Task_10ms_ID);
+            //(void)ActivateTask(Task_Can_ID);
             break;
         case Alarm_100ms:
-            // printf("[Os] :Alarm thread 100ms\n");
             //(void)ActivateTask(Task_100ms_ID);
-            //(void)ActivateTask(Task_Can_ID);
             break;
         case Alarm_500ms:
             (void)ActivateTask(Task_10ms_ID);

@@ -36,22 +36,10 @@ void Swc_MotorCtrl_Run10ms(void)
     //đọc rpm từ cảm biến 
     (void)Rte_Read_Meas(&meas);           /* có thể dùng để bảo vệ/giới hạn */
 
-
-    //triển khai áp luật an toàn nếu cần 
-    /* 
-        - kiểm tra Timeout : 
-
-        - derate theo temp/current 
-
-        - đổi chiều an toàn
-
-        - giới hạn duty
-    
-    */
-
     //tạo gói dữ liệu -> publish cho Swc_ActuatorIf
     ActuatorCmd_s out;
-    out.dir = DIR_FWD;  //giả sử dir mặc định 
+    
+    out.dir = DIR_FWD;  //giả sử dir mặc định motor quay thuận chiều 
 
     /* map đơn giản để demo (bạn thay bằng luật thật của mình) */
     out.duty_pct = clamp_u16(rpm_com,100u);    //clamp duty 0 - 100

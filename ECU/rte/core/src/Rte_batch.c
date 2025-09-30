@@ -5,6 +5,9 @@
 #include "Swc_MotorFbAcq.h"
 #include "Swc_ActuatorIf.h"
 #include "Swc_MotorCtrl.h"
+#include "csv_io.h"
+static uint16 rpm = 0;
+
 
 void Rte_Run_10ms_Batch(void)
 {
@@ -14,7 +17,6 @@ void Rte_Run_10ms_Batch(void)
     Swc_ActuatorIf_Run10ms();
 }
 void Rte_Com_RxBatch(){   /* xử lý gói tin nhận: map vào RTE buffers */
-    uint16 rpm = 0;
     (void)Com_EngineSpeed(&rpm);
     printf("[Task_Com]: Read rpm : %d\n",rpm);
 }

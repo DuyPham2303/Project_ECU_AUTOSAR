@@ -108,7 +108,10 @@
         "rte_types.h": "c",
         "csv_io.h": "c",
         "adc.h": "c",
-        "swc_actuatorif.h": "c"
+        "swc_actuatorif.h": "c",
+        "stdlib.h": "c",
+        "pwm.h": "c",
+        "pdur.h": "c"
     },
     "cmake.sourceDirectory": "E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/app",
     "CodeGPT.apiKey": "CodeGPT Plus Beta"

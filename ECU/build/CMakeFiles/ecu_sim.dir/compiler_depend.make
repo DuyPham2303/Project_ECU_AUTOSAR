@@ -331,6 +331,7 @@ CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/com/Com.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/mcal/can/Can.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h \
+  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/csvlib/csv_io.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_batch.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.h \
@@ -522,6 +523,8 @@ CMakeFiles/ecu_sim.dir/tasks/InitTask.c.obj: E:/HALA_Academy/Advance_C_Autosar/E
   C:/mingw-w64/mingw32/i686-w64-mingw32/include/vadefs.h \
   C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stddef.h \
   C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stdint.h \
+  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/canif/CanIf.h \
+  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/com/Com.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/ecua/iohwab/IoHwAb.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/ecum/EcuM.h \
   E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os.h \

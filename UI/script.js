@@ -1,4 +1,4 @@
-  // === DOM elements ===
+  // === DOM elements === (Các thông số vật lý hiển thị trên giao diện mô phỏng)
   const road           = document.getElementById('road');
   const scooter        = document.getElementById('scooter');
   const wheel          = document.getElementById('wheel');
@@ -205,7 +205,7 @@
       road.style.backgroundPositionX = `${roadScroll}px`;
     }
   }
-
+calculateTargetState
   // --- Hàm chạy mô phỏng và cập nhật liên tục ---
   function simulateAndUpdateUI() {
     const sp = requestedSpeed;
@@ -214,7 +214,7 @@
     calculateTargetState(sp, ld);
     updateStateSmooth();
     updateUI();
-    //updateScooter();
+    updateScooter();
   }
 
   // --- Thao tác tải ---
@@ -252,11 +252,7 @@
 
   // --- Khởi động mô phỏng ---
   simulateAndUpdateUI();
-
-  updateScooter();
-  setInterval(simulateAndUpdateUI, 500);
-
-  setInterval(updateScooter, dt * 1000);
+  setInterval(simulateAndUpdateUI, dt * 1000);
 
 
 // === PWM canvas giữ nguyên ===
@@ -340,7 +336,6 @@ function generateCANFrame() {
   }
 }
 
-
 let debounceTimeout = null;
 
 speedSlider.addEventListener('input', () => {
@@ -354,9 +349,6 @@ speedSlider.addEventListener('input', () => {
     debounceTimeout = null;
   }, 1000);
 });
-
-
-
 
 function sendCanCode() {
   const input = document.getElementById('can-code');
@@ -419,7 +411,7 @@ function sendCanCode() {
 async function syncData() {
   // 1) Lấy dữ liệu /data và cập nhật mô phỏng
   try {
-    const res = await fetch('/data');
+    const res = await fetch('/data');   /* lấy dữ liệu từ data.csv */
     if (!res.ok) throw new Error(res.status);
     const d = await res.json();
     // Cập nhật requestedSpeed (có thể cập nhật thêm state khác nếu cần)
@@ -436,11 +428,12 @@ async function syncData() {
     current: state.current.toFixed(2),
     torque: state.torque.toFixed(2),
     currentSpeed: (Math.abs(state.speed) / motorParams.maxSpeed * 120).toFixed(2),
-    can: canData,
+    can: canData
   };
 
   // 3) Gửi dữ liệu mô phỏng về server
   try {
+    //gửi payload xuống data.csv
     const res2 = await fetch('/save-data', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
