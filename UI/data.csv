@@ -1,9 +1,11 @@
-temp,27.04
-voltage,59.32
-current,1.35
-torque,5.00
-currentSpeed,40.00
-requestedSpeed,40
-can,0x3F0 8 03 4B 20 00 00 00 00 00
+temp,29.38
+voltage,52.84
+current,14.32
+torque,53.00
+currentSpeed,67.00
+requestedSpeed,75
+pwm,0
+direction,0
+can,0x3F0 8 03 6B 23 00 00 00 00 00
 newTemperature,0
 newStatus,OK

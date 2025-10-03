@@ -50,6 +50,7 @@
     + quay lại code giải thích code Can -> Can_if -> PduR -> Com
     + Giải thích mục tiêu Task_Can và Task_Com -> quy trình xử lý và mqh giữa 2 thằng
     + Cách Khởi tạo ? 
+        - update Os_posix.c, Os.h, Cmakelist
 - ## Triển khai nơi gọi các Swcs 
     + các hàm batch 
 - ## Chạy test thử 
