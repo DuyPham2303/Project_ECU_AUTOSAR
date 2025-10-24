@@ -1,5 +1,6 @@
 #include "Swc_MotorCtrl.h"
 #include "Rte_Swc_MotorCtrl.h"
+#include "Swc_EcuState.h"
 #include <stdio.h>
 
 /* Cấu hình demo: map rpm từ COM -> duty% (đơn giản để quan sát luồng) */
@@ -36,22 +37,30 @@ void Swc_MotorCtrl_Run10ms(void)
     //đọc rpm từ cảm biến 
     (void)Rte_Read_Meas(&meas);           /* có thể dùng để bảo vệ/giới hạn */
 
-
-    //triển khai áp luật an toàn nếu cần 
-    /* 
-        - kiểm tra Timeout : 
-
-        - derate theo temp/current 
-
-        - đổi chiều an toàn
-
-        - giới hạn duty
-    
-    */
-
     //tạo gói dữ liệu -> publish cho Swc_ActuatorIf
     ActuatorCmd_s out;
-    out.dir = DIR_FWD;  //giả sử dir mặc định 
+    
+    out.dir = DIR_FWD;  //giả sử dir mặc định motor quay thuận chiều 
+
+    // if(/* Lỗi nhẹ từ cảm biến ví dụ Timeout 100ms, VcuCmd chưa được update*/){
+    //     //xử lý gán Duty = 0 , Dir = NEU -> đảm bảo động cơ không xử lý tín hiệu lỗi
+    // }
+    // else if(/*dòng , áp vượt ngưỡng mềm*/){
+    //     //giảm dần duty để điều chỉnh lại dòng , áp
+
+    //     //Gán thông tin lỗi và set event để kích hoạt statemachine chuyển đến
+    //     SensorErrorFlag flag = {.CurrentError = TOO_HIGH,
+    //                             .VoltageError = TOO_HIGH};
+    //     TriggerEventStateEcu(SENSOR_ERROR);
+    //     RecordError(flag);
+    // }
+    // else if(/*dòng, áp,  vượt ngưỡng cứng */){
+    //     //cắt hoàn toàn duty để bảo vệ động cơ không bị hư hại
+    // }
+    // else if(/* Tốc độ quá lớn -> không cho phép đổi chiều */){
+    //     //cập nhật Dir nếu tốc dộ hợp lệ
+    // }
+
 
     /* map đơn giản để demo (bạn thay bằng luật thật của mình) */
     out.duty_pct = clamp_u16(rpm_com,100u);    //clamp duty 0 - 100

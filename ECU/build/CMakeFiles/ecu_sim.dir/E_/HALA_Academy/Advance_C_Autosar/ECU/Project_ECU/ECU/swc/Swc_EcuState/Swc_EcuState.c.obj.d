@@ -1,7 +1,7 @@
-CMakeFiles/ecu_sim.dir/tasks/Task_Can.c.obj: \
- E:\HALA_Academy\Advance_C_Autosar\ECU\Project_ECU\ECU\app\tasks\Task_Can.c \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os_Types.h \
+CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj: \
+ E:\HALA_Academy\Advance_C_Autosar\ECU\Project_ECU\ECU\swc\Swc_EcuState\Swc_EcuState.c \
+ E:\HALA_Academy\Advance_C_Autosar\ECU\Project_ECU\ECU\swc\Swc_EcuState\Swc_EcuState.h \
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h \
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stdint.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/stdint.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/crtdefs.h \
@@ -13,9 +13,6 @@ CMakeFiles/ecu_sim.dir/tasks/Task_Can.c.obj: \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/sdks/_mingw_ddk.h \
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stddef.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/stddef.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os_Cfg.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/mcal/can/Can.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/stdio.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/corecrt_stdio_config.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/_mingw_off_t.h \

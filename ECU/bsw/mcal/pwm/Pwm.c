@@ -10,6 +10,6 @@ void Pwm_Init(void){
 void Pwm_SetDutyCycle(uint8 channelId, uint16 duty_percent){
     (void)channelId;
     if(duty_percent > 100u) duty_percent = 100u;
-    (void)csv_setInt("duty", (int)duty_percent);
-    //printf("[PWM] SetDuty channel=%u duty=%u%%\n", (unsigned)channelId, (unsigned)duty_percent);
+    (void)csv_setInt("duty",duty_percent);
+    printf("[PWM] SetDuty channel=%u duty=%u%%\n", (unsigned)channelId, (unsigned)duty_percent);
 }

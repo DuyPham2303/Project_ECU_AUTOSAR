@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "IoHwAb.h"
-
 /* ================== SR Buffers & Flags ================== */
 
 /* EngineSpeed từ COM (rpm) */
@@ -17,13 +16,9 @@ static boolean s_MeasUpdated       = FALSE;
 static ActuatorCmd_s s_ActuatorCmd = {0};
 static boolean       s_ActCmdUpd   = FALSE;
 
-/* (nội bộ RTE) COM cập nhật */
-/* static void Rte_Com_Update_VcuCmdFromPdu(){
-    
-} */
+const uint8 maxKmh = 75;
+const uint16_t maxRpm = 924;
 
-static const uint16 MAX_RPM = 924;
-static const uint8 MAX_KMH = 75;
 /* ================== Lifecycle ================== */
 void Rte_Init(void)
 {
@@ -49,23 +44,24 @@ void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc)
         printf("[RTE] EngineSpeedFromPdu: DLC=%u <2 -> bỏ\n", (unsigned)dlc);
         return;
     }
-    uint16 raw = (uint16)((((uint16)data[2]) << 8) | (uint16)data[1]);
+    uint16 raw_kmh = (uint16)((((uint16)data[2]) << 8) | (uint16)data[1]);
 
-    uint16 kmh = raw/100;
-    
-    if(kmh > MAX_KMH) kmh = MAX_KMH;
+    double kmh = raw_kmh / 100.0;
 
-    uint16 rpm = (MAX_RPM * kmh) / MAX_KMH;
+    if(kmh > maxKmh) kmh = maxKmh;
+
+    uint16 rpm = ((uint8)kmh * maxRpm ) / maxKmh;  
 
     //ghi vào nội bộ RTE -> Cho phép các Swc truy cập thông qua SR interface
     (void)Rte_Write_Com_PPort_EngineSpeed(rpm);
-    printf("[RTE] EngineSpeedFromPdu: rpm=%u (bytes %02X %02X)\n",
-           (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
+    printf("[RTE] EngineSpeedFromPdu: rpm=%u kmh = %u (bytes %02X %02X)\n",
+           (unsigned)rpm, (unsigned)kmh,(unsigned)data[0], (unsigned)data[1]);
 }
 
 /* ================== SR: EngineSpeed (COM → MotorCtrl) ================== */
 Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm)
 {
+    //
     s_ComEngineSpeedRpm = rpm;
     s_ComSpeedUpdated   = TRUE;
     /* printf optional */

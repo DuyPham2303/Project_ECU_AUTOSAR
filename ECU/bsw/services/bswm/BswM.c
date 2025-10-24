@@ -1,5 +1,6 @@
-#include "EcuM.h"
-#include "stm32f10x.h"   /* CMSIS: SystemInit() */
+#include "BswM.h"
+//#include "stm32f10x.h"   /* CMSIS: SystemInit() */
+#include "Ecu_Types.h"
 
 /* Trạng thái nội bộ đơn giản (nếu cần mở rộng) */
 static boolean EcuM_Initialized = FALSE;
@@ -15,6 +16,6 @@ void EcuM_StartupTwo(void)
     /* Khởi tạo mức thấp: clock tree, flash latency, vector base… */
     /* Ở STM32 SPL/CMSIS: SystemInit() cấu hình RCC, Flash, PLL theo system_stm32f10x.c */
     if (EcuM_Initialized == TRUE) {
-        SystemInit();
+        //SystemInit(); //Khởi tạo hardware (không sử dụng trong Project mô phỏng) -> có thể bỏ qua
     }
 }

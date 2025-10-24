@@ -43,4 +43,5 @@ typedef struct
     Direction_e Dir;   /* NEU/FWD/REV */
 } ActuatorCmd_s;
 
+
 #endif /* ECU_TYPES_H */

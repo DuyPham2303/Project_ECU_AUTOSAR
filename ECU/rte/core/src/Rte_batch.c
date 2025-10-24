@@ -1,20 +1,19 @@
-#include <stdio.h>
 #include "Rte_batch.h"
-#include "Can.h"
-#include "Com.h"
-#include "Swc_MotorFbAcq.h"
-#include "Swc_ActuatorIf.h"
 #include "Swc_MotorCtrl.h"
-
-void Rte_Run_10ms_Batch(void)
-{
-    /* gọi runnable 10 ms của các SWC */
-    Swc_MotorFbAcq_Run10ms();
+#include "Swc_MotorFbAcq.h"
+#include "Swc_EcuState.h"
+#include "Swc_ActuatorIf.h"
+void Rte_Run_10ms_Batch(){
     Swc_MotorCtrl_Run10ms();
+    Swc_MotorFbAcq_Run10ms();
     Swc_ActuatorIf_Run10ms();
+    //Swc_EcuStateMachine();
+    //Gọi các hàm run còn lại 
 }
-void Rte_Com_RxBatch(){   /* xử lý gói tin nhận: map vào RTE buffers */
-    uint16 rpm = 0;
-    (void)Com_EngineSpeed(&rpm);
-    printf("[Task_Com]: Read rpm : %d\n",rpm);
+void Rte_Init_PowerOnBatch(){
+    Swc_MotorFbAcq_Init();
+    Swc_MotorCtrl_Init();
+    Swc_ActuatorIf_Init();
+    //Gọi các hàm init còn lại 
+    //TriggerEventStateEcu(SYSTEM_OK);
 }

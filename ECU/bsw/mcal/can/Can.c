@@ -22,15 +22,6 @@ static char* skip_spaces(char* p) {
 static boolean parse_can_line(char* line, uint32* outId, uint8* outDlc, uint8 outData[8])
 {
     if (!line || !outId || !outDlc || !outData) return FALSE;
-
-    /* tìm dấu phẩy sau prefix "can," */
-    //char* p = strchr(line, ',');
-    //if (!p) return FALSE;
-    //printf("parsed %s OK\n",p);
-    //p++; /* sau dấu ',' */
-
-    /* parse canId (0x... hoặc decimal) */
-    //p = skip_spaces(p);
     char* p = line;
     char* end = NULL;
     unsigned long id = strtoul(p, &end, 0);
@@ -75,8 +66,9 @@ void Can_MainFunction_Read(void)
     re_read:
     //đợi đến khi đọc xong 
     while(csv_getString("can", frame_str, sizeof(frame_str)) == TRUE);
-    //printf("[CAN] CSV: \"%s\"\n", frame_str);
+    printf("[CAN] CSV: \"%s\"\n", frame_str);
 
+    //nơi lưu trữ parsed Can frame -> 
     uint32 id = 0;
     uint8  dlc = 0;
     uint8  data[8];
@@ -89,15 +81,15 @@ void Can_MainFunction_Read(void)
     buf[n] = '\0';
     if (!parse_can_line(buf, &id, &dlc, data)) {
         printf("[CAN] Parse FAIL -> bỏ qua dòng\n");
-        //continue;
         memset(frame_str,0,sizeof(frame_str));
-        goto re_read;
+        goto re_read; //label để quay lại nếu đọc frame Can thất bại 
     }
 
-    //printf("[CAN] RX: ID=0x%X DLC=%u Data=", (unsigned)id, (unsigned)dlc);
+    printf("[CAN] RX: ID=0x%X DLC=%u Data=", (unsigned)id, (unsigned)dlc);
 
     for (uint8 i = 0; i < dlc; i++) printf("%02X ", data[i]);
     printf("\n");
 
+    //gửi dữ liệu đã parsed không cần đóng gói theo kiểu Pdu -> do chỉ có 1 protocol là Can
     (void)CanIf_Receive(id, data, dlc);    
 }

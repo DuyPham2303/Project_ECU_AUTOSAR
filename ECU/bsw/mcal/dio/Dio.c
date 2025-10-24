@@ -10,5 +10,5 @@ void Dio_Init(void){
 void Dio_WriteChannel(uint8 channelId, uint8 level){
     (void)channelId;
     (void)csv_setInt("direction", level ? 1 : 0);
-    //printf("[DIO] Write channel=%u level=%u\n", (unsigned)channelId, (unsigned)level);
+    printf("[DIO] Write channel=%u level=%u\n", (unsigned)channelId, (unsigned)level);
 }

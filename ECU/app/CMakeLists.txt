@@ -38,6 +38,7 @@ set(SWC_ACTUATOR_IF_DIR  "${ROOT_DIR}/swc/Swc_ActuatorIf")
 set(SWC_MOTOR_CTRL_DIR   "${ROOT_DIR}/swc/Swc_MotorCtrl")
 set(SWC_MOTOR_FB_ACQ_DIR "${ROOT_DIR}/swc/Swc_MotorFbAcq")
 set(SWC_VCU_CMD_IN_DIR   "${ROOT_DIR}/swc/Swc_VcuCmdIn")
+set(SWC_ECU_STATE_DIR   "${ROOT_DIR}/swc/Swc_EcuState")
 
 # ==== C standard & warnings ====
 set(CMAKE_BUILD_TYPE Debug)
@@ -72,6 +73,8 @@ include_directories(
   "${SWC_MOTOR_CTRL_DIR}"
   "${SWC_MOTOR_FB_ACQ_DIR}"
   "${SWC_VCU_CMD_IN_DIR}"
+  "${SWC_ECU_STATE_DIR}"
+  
 )
 
 # ==== Sources (tự động quét file .c) ====
@@ -107,6 +110,7 @@ file(GLOB SWC_SOURCES
   "${SWC_MOTOR_CTRL_DIR}/*.c"
   "${SWC_MOTOR_FB_ACQ_DIR}/*.c"
   "${SWC_VCU_CMD_IN_DIR}/*.c"
+  "${SWC_ECU_STATE_DIR}/*.c"
 )
 
 # ==== Executable ====

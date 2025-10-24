@@ -1,5 +1,5 @@
-#ifndef ECUM_H
-#define ECUM_H
+#ifndef BSWM_H
+#define BSWM_H
 
 #include "Std_Types.h"
 
@@ -19,4 +19,4 @@ void EcuM_StartupTwo(void);
 }
 #endif
 
-#endif /* ECUM_H */
+#endif /* BSWM_H */

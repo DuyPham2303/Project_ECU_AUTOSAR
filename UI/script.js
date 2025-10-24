@@ -1,282 +1,242 @@
-  // === DOM elements ===
-  const road           = document.getElementById('road');
-  const scooter        = document.getElementById('scooter');
-  const wheel          = document.getElementById('wheel');
-  const speedSlider    = document.getElementById('speed');
-  const speedMotorDisplay    = document.getElementById('speed-motor');
-  const voltageDisplay = document.getElementById('voltage');
-  const currentDisplay = document.getElementById('current');
-  const torqueDisplay  = document.getElementById('torque');
-  const loadCountDisplay = document.getElementById('load-count');
-  const convertPercentDisplay = document.getElementById('convert-percent');
-  const convertCircle   = document.getElementById('convert-circle');
-  const canLog          = document.getElementById('can-log');
+// === DOM elements ===
+const road = document.getElementById('road');
+const scooter = document.getElementById('scooter');
+const wheel = document.getElementById('wheel');
+const speedSlider = document.getElementById('speed');
+const speedMotorDisplay = document.getElementById('speed-motor');
+const voltageDisplay = document.getElementById('voltage');
+const currentDisplay = document.getElementById('current');
+const torqueDisplay = document.getElementById('torque');
+const loadCountDisplay = document.getElementById('load-count');
+const convertPercentDisplay = document.getElementById('convert-percent');
+const convertCircle = document.getElementById('convert-circle');
+const canLog = document.getElementById('can-log');
 
-  // === Tham số động cơ và hệ số mô phỏng ===
-  const motorParams = {
-    nominalVoltage: 60,
-    maxSpeed: 924,           // rpm ~ 120 km/h
-    maxTorque: 120,
-    Kt: 3.7,
-    maxCurrent: 32.5,
-    internalResistance: 0.5,
-    thermalCoeff: 0.02,
-    coolingRate: 0.1,
-    ambientTemp: 25,
-    maxTemp: 155,
-  };
 
-  // === Đối tượng trạng thái động cơ ===
-  const state = {
-    speed: 0,
-    torque: 0,
-    current: 0,
-    voltage: motorParams.nominalVoltage,
-    temperature: motorParams.ambientTemp,
-    pwmDuty: 0,
-    loadCount: 0,
-    direction: 1,
-  };
+// === Animation state ===
+let roadScroll = 0;
+let roadDirection = 1;
+let duty = 0;
+let sentSpeed = 0;
+let canData = 0;
 
-  // Trạng thái mục tiêu
-  let targetState = {
-    speed: 0,
-    torque: 0,
-    current: 0,
-    voltage: motorParams.nominalVoltage,
-    temperature: motorParams.ambientTemp,
-    pwmDuty: 0,
-    direction: 1,
-  };
+const dt = 0.04; // 40ms
 
-  // === PID Controller ===
-  const Kp = 1.0;
-  const Ki = 0.1;
-  const Kd = 0.05;
-  let integral = 0;
-  let previousError = 0;
-  const dt = 0.04; // 40ms
+// --- Map slider [0.5..5] to speed km/h [0..120] ---
+function getSpeedKmhFromSlider() {
+  const val = parseFloat(speedSlider.value);
+  const minInput = 0.5;
+  const maxInput = 5;
+  const minOutput = 0;
+  const maxOutput = 120;
+  const mapped = ((val - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) + minOutput;
+  return Math.min(Math.max(mapped, minOutput), maxOutput);
+}
 
-  function computePID(targetSpeed, actualSpeed) {
-    const error = targetSpeed - actualSpeed;
-    integral += error * dt;
-    const derivative = (error - previousError) / dt;
-    const output = Kp * error + Ki * integral + Kd * derivative;
-    previousError = error;
-    return Math.min(Math.max(output, 0), 100);
+
+// === Tham số động cơ và hệ số mô phỏng ===
+const motorParams = {
+  U_batt: 60,     // V
+  omega0: 924,    // rpm no-load @100%
+  v0: 120,    // km/h no-load @100%
+  Tstall: 120,    // Nm
+  Imax: 32.5,   // A
+  Kt: 3.7,    // Nm/A
+  Ifric0: 0,      // A @0%
+  Ifric100: 2,      // A @100%
+  R0: 0.5,    // Ω @25°C
+  Tamb: 25,     // °C
+  beta: 0.2     // °C per W
+};
+const {
+  U_batt, omega0, v0, Tstall,
+  Imax, Kt, Ifric0, Ifric100,
+  R0, Tamb, beta
+} = motorParams;
+
+
+// State & target
+const state = {
+  rpm: 0,
+  speed: 0,
+  ifric: 0,
+  iload: 0,
+  current: 0,
+  vsup: 0,
+  pmech: 0,
+  pelec: 0,
+  tcoil: Tamb,
+  stall: 'No',
+  torque: 0,
+  loadCount: 0,
+  direction: 1
+};
+let target = { ...state };
+
+// --- Tính toán target mỗi khi slider thay đổi ---
+function computeTarget(duty, load) {
+  const D = duty / 100;
+  const Tload = load;
+
+  const Tmax = Tstall * D;
+  const r = Tmax > 0 ? Math.max(0, 1 - Tload / Tmax) : 0;
+
+  const Ifric = Ifric0 + (Ifric100 - Ifric0) * D;
+  const Il = Tload / Kt;
+  let Itot = Ifric + Il;
+  if (Itot > Imax) Itot = Imax;
+
+  let Vsup = U_batt * D - Itot * R0;
+  if (Vsup < 0) Vsup = 0;
+
+  const RPM = omega0 * D * r;
+  const speed = v0 * D * r;
+
+  const omegaRad = RPM * 2 * Math.PI / 60;
+  const Pmech = r > 0 ? Tload * omegaRad : 0;
+  const Pelec = Vsup * Itot;
+
+  let Tcoil = Tamb + beta * (Pelec - Pmech);
+  if (Tcoil < Tamb) Tcoil = Tamb;
+
+  const stall = r <= 0 ? 'Yes' : 'No';
+
+  const Torque = omegaRad > 0
+    ? Pmech / omegaRad                       // T = P / ω
+    : 0;
+
+  updateStateSmooth();
+
+  Object.assign(target, {
+    rpm: RPM,
+    speed,
+    ifric: Ifric,
+    iload: Il,
+    current: Itot,
+    vsup: Vsup,
+    pmech: Pmech,
+    pelec: Pelec,
+    tcoil: Tcoil,
+    stall,
+    torque: Torque
+  });
+}
+
+// --- Exponential smoothing (chỉ nội suy vào state) ---
+const smoothing = 0.1;
+function updateStateSmooth() {
+  ['rpm', 'speed', 'ifric', 'iload', 'current', 'vsup', 'pmech', 'pelec', 'tcoil', 'torque']
+    .forEach(k => {
+      state[k] += (target[k] - state[k]) * smoothing;
+    });
+  state.stall = target.stall;
+}
+
+
+
+// --- Cập nhật UI ---
+function updateUI() {
+  speedMotorDisplay.textContent = `Vận tốc (km/h): ${state.speed.toFixed(0)}`;
+  voltageDisplay.textContent = `${state.vsup.toFixed(1)} V`;
+  currentDisplay.textContent = `${state.current.toFixed(1)} A`;
+  torqueDisplay.textContent = `${state.torque.toFixed(1)} Nm`;
+  loadCountDisplay.textContent = `${state.loadCount} vật`;
+  convertPercentDisplay.textContent = `${state.tcoil.toFixed(1)} °C`;
+
+  const safeTemp = 60;
+  let pct = state.tcoil <= safeTemp ? (state.tcoil / safeTemp) * 100 : 100;
+  let color = state.tcoil <= safeTemp ? 'green' : 'red';
+
+  convertCircle.style.strokeDashoffset = 100 - pct;
+  convertCircle.style.stroke = color;
+
+}
+
+// --- Animation bánh xe & nền đường ---
+function updateScooter() {
+  const maxSpeedForAnimation = 5;
+  // Map tốc độ thực tế (rpm → km/h) sang animation speed
+  const currentSpeedKmh = state.speed.toFixed(0);
+  const actualSpeed = (currentSpeedKmh / 120) * maxSpeedForAnimation;
+
+  if (actualSpeed === 0) {
+    wheel.style.animationPlayState = 'paused';
+  } else {
+    wheel.style.animationPlayState = 'running';
+    wheel.style.animationDuration = `${1 / actualSpeed}s`;
+    roadScroll += state.direction * actualSpeed * 2;
+    road.style.backgroundPositionX = `${roadScroll}px`;
   }
+}
 
-  // === Animation state ===
-  let roadScroll = 0;
-  let roadDirection = 1;
-  let requestedSpeed = 0;
-  let sentSpeed = 0;
-  let canData = 0;
+// --- Hàm chạy mô phỏng và cập nhật liên tục ---
+function simulateAndUpdateUI() {
 
-  // --- Map slider [0.5..5] to speed km/h [0..120] ---
-  function getSpeedKmhFromSlider() {
-    const val = parseFloat(speedSlider.value);
-    const minInput = 0.5;
-    const maxInput = 5;
-    const minOutput = 0;
-    const maxOutput = 120;
-    const mapped = ((val - minInput) / (maxInput - minInput)) * (maxOutput - minOutput) + minOutput;
-    return Math.min(Math.max(mapped, minOutput), maxOutput);
-  }
+  const sp = duty;
+  const ld = state.loadCount * 11.5 + 5;
 
-  // --- Cập nhật nhiệt độ động cơ ---
-  function updateTemperature(deltaTime = dt) {
-    const ambientTemp = 27;
-    const currentWeight = 1.0;
-    const torqueWeight = 0.5;
-    const speedWeight = 0.3;
+  console.log(`test: ${sp}`);
 
-    const currentFactor = Math.min(state.current / motorParams.maxCurrent, 1);
-    const torqueFactor = Math.min(state.torque / motorParams.maxTorque, 1);
-    const speedFactor = Math.min(Math.abs(state.speed) / motorParams.maxSpeed, 1);
+  computeTarget(sp, ld);
+  updateUI();
+}
 
-    const thermalRiseFactor = 
-      currentWeight * currentFactor + 
-      torqueWeight * torqueFactor + 
-      speedWeight * speedFactor;
+// --- Thao tác tải ---
+function addLoad() {
+  if (state.loadCount >= 10) return;
+  const newLoad = document.createElement('div');
+  newLoad.classList.add('load');
+  newLoad.style.left = `${30 + state.loadCount * 25}px`;
+  scooter.appendChild(newLoad);
+  state.loadCount++;
+}
+function removeLoad() {
+  if (state.loadCount <= 0) return;
+  const loads = scooter.querySelectorAll('.load');
+  scooter.removeChild(loads[loads.length - 1]);
+  state.loadCount--;
 
-    const tempIncrease = thermalRiseFactor * motorParams.thermalCoeff * state.current * deltaTime;
-    const tempDecrease = motorParams.coolingRate * (state.temperature - ambientTemp) * deltaTime;
+}
 
-    let newTemp = state.temperature + tempIncrease - tempDecrease;
-    state.temperature = Math.min(Math.max(newTemp, ambientTemp), motorParams.maxTemp + 20);
-  }
+// --- Đổi chiều ---
+function turnLeft() {
+  roadDirection = -1;
+  wheel.classList.add('reverse');
+  scooter.style.transform = 'scaleX(-1)';
+  state.direction = -1;
 
-  // --- Tính trạng thái mục tiêu dựa vào tốc độ và tải ---
-  function calculateTargetState(speedKmh, loadNm) {
-    targetState.direction = speedKmh < 0 ? -1 : 1;
-    const maxKmh = 120;
-    const absKmh = Math.min(Math.max(Math.abs(speedKmh), 0), maxKmh);
-    const targetRpm = (absKmh / maxKmh) * motorParams.maxSpeed;
+}
+function turnRight() {
+  roadDirection = 1;
+  wheel.classList.remove('reverse');
+  scooter.style.transform = 'scaleX(1)';
+  state.direction = 1;
 
-    if (loadNm <= motorParams.maxTorque && absKmh > maxKmh) {
-      // Max speed, có tải nhẹ → tốc độ thực tế giảm do tải
-      const loadFactor = loadNm / motorParams.maxTorque;
-      const speedReductionFactor = Math.max(0.6, 1 - loadFactor * 0.4);
-      const actualRpm = targetRpm * speedReductionFactor;
+}
 
-      targetState.speed = actualRpm * targetState.direction;
-      targetState.torque = loadNm;
+// --- Khởi động mô phỏng ---
+simulateAndUpdateUI();
 
-      const calculatedCurrent = targetState.torque / motorParams.Kt;
-      targetState.current = Math.min(calculatedCurrent, motorParams.maxCurrent * 1.1);
+updateScooter();
+setInterval(simulateAndUpdateUI, 500);
 
-      targetState.voltage = motorParams.nominalVoltage - targetState.current * motorParams.internalResistance;
-
-      const pidPwm = computePID(targetRpm, actualRpm);
-      targetState.pwmDuty = Math.min(pidPwm, 100);
-    } 
-    else if (loadNm > motorParams.maxTorque) {
-      // Quá tải, stall
-      targetState.speed = 0;
-      targetState.torque = loadNm;
-      targetState.current = Math.min(targetState.torque / motorParams.Kt, motorParams.maxCurrent + 10);
-      targetState.voltage = motorParams.nominalVoltage - targetState.current * motorParams.internalResistance;
-      targetState.pwmDuty = 100;
-    } 
-    else {
-      // Tải cao hoặc tăng tốc
-      const availableRpm = motorParams.maxSpeed * (1 - loadNm / motorParams.maxTorque);
-      const cappedRpm = Math.max(Math.min(targetRpm, availableRpm), 0);
-
-      targetState.speed = cappedRpm * targetState.direction;
-      targetState.torque = loadNm;
-      targetState.current = Math.min(targetState.torque / motorParams.Kt, motorParams.maxCurrent);
-      targetState.voltage = motorParams.nominalVoltage - targetState.current * motorParams.internalResistance;
-      targetState.pwmDuty = (Math.abs(targetState.speed) / motorParams.maxSpeed) * 100;
-    }
-  }
-
-  // --- Nội suy mượt giữa trạng thái hiện tại và mục tiêu ---
-  function smoothUpdate(currentValue, targetValue, step = 0.05) {
-    const delta = targetValue - currentValue;
-    if (Math.abs(delta) < 0.001) return targetValue;
-    return currentValue + delta * step;
-  }
-
-  // --- Cập nhật trạng thái thực tế ---
-  function updateStateSmooth() {
-    state.speed = smoothUpdate(state.speed, targetState.speed, 0.1);
-    state.torque = smoothUpdate(state.torque, targetState.torque, 0.1);
-    state.current = smoothUpdate(state.current, targetState.current, 0.1);
-    state.voltage = smoothUpdate(state.voltage, targetState.voltage, 0.05);
-    state.pwmDuty = smoothUpdate(state.pwmDuty, targetState.pwmDuty, 0.1);
-    state.direction = targetState.direction;
-
-    updateTemperature(dt);
-  }
-
-  // --- Cập nhật UI ---
-  function updateUI() {
-    speedMotorDisplay.textContent = `Vận tốc (km/h): ${ (Math.abs(state.speed) / motorParams.maxSpeed * 120).toFixed(1) }`;
-    voltageDisplay.textContent = `${state.voltage.toFixed(1)} V`;
-    currentDisplay.textContent = `${state.current.toFixed(1)} A`;
-    torqueDisplay.textContent = `${state.torque.toFixed(1)} Nm`;
-    loadCountDisplay.textContent = `${state.loadCount} vật`;
-    convertPercentDisplay.textContent = `${state.temperature.toFixed(1)} °C`;
-
-    const safeTemp = 60;
-    let pct = state.temperature <= safeTemp ? (state.temperature / safeTemp) * 100 : 100;
-    let color = state.temperature <= safeTemp ? 'green' : 'red';
-
-    convertCircle.style.strokeDashoffset = 100 - pct;
-    convertCircle.style.stroke = color;
-
-  }
-
-  // --- Animation bánh xe & nền đường ---
-  function updateScooter() {
-    const maxSpeedForAnimation = 5;
-    // Map tốc độ thực tế (rpm → km/h) sang animation speed
-    const currentSpeedKmh = (Math.abs(state.speed) / motorParams.maxSpeed) * 120;
-    const actualSpeed = (currentSpeedKmh / 120) * maxSpeedForAnimation;
-
-    if (actualSpeed === 0) {
-      wheel.style.animationPlayState = 'paused';
-    } else {
-      wheel.style.animationPlayState = 'running';
-      wheel.style.animationDuration = `${1 / actualSpeed}s`;
-      roadScroll += state.direction * actualSpeed * 2;
-      road.style.backgroundPositionX = `${roadScroll}px`;
-    }
-  }
-
-  // --- Hàm chạy mô phỏng và cập nhật liên tục ---
-  function simulateAndUpdateUI() {
-    const sp = requestedSpeed;
-    const ld = state.loadCount * 12 + 5;
-
-    calculateTargetState(sp, ld);
-    updateStateSmooth();
-    updateUI();
-    //updateScooter();
-  }
-
-  // --- Thao tác tải ---
-  function addLoad() {
-    if (state.loadCount >= 10) return;
-    const newLoad = document.createElement('div');
-    newLoad.classList.add('load');
-    newLoad.style.left = `${30 + state.loadCount * 25}px`;
-    scooter.appendChild(newLoad);
-    state.loadCount++;
-  }
-  function removeLoad() {
-    if (state.loadCount <= 0) return;
-    const loads = scooter.querySelectorAll('.load');
-    scooter.removeChild(loads[loads.length - 1]);
-    state.loadCount--;
-
-  }
-
-  // --- Đổi chiều ---
-  function turnLeft() {
-    roadDirection = -1;
-    wheel.classList.add('reverse');
-    scooter.style.transform = 'scaleX(-1)';
-    state.direction = -1;
-
-  }
-  function turnRight() {
-    roadDirection = 1;
-    wheel.classList.remove('reverse');
-    scooter.style.transform = 'scaleX(1)';
-    state.direction = 1;
-
-  }
-
-  // --- Khởi động mô phỏng ---
-  simulateAndUpdateUI();
-
-  updateScooter();
-  setInterval(simulateAndUpdateUI, 500);
-
-  setInterval(updateScooter, dt * 1000);
+setInterval(updateScooter, dt * 1000);
 
 
 // === PWM canvas giữ nguyên ===
 const canvas = document.getElementById("canvas");
-const ctx    = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 const slider = document.getElementById("duty");
-const label  = document.getElementById("duty-value");
-let offset   = 0;
+const label = document.getElementById("duty-value");
+let offset = 0;
 
-function map120to100(value) {
-    if (value <= 0) return 0;
-    if (value >= 120) return 100;
-    return (value / 120) * 100;
-}
-  
+
+
 
 function drawPWM() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const period = 100;
-  const high = map120to100(requestedSpeed);
+  const high = duty;
   ctx.beginPath();
   ctx.lineWidth = 2;
   ctx.strokeStyle = "#00ccff";
@@ -415,6 +375,13 @@ function sendCanCode() {
   return false;
 }
 
+
+// trước khi build payload, xác định Vref và ADC max
+const VREF = 5, ADC_MAX = 4095;
+
+// hàm chuyển giá trị x trong khoảng [0…X_MAX] sang ADC count
+const toAdc = (x, X_MAX) => Math.round((x / X_MAX) * ADC_MAX);
+
 // === Gộp fetch và send thành 1 hàm đồng bộ ===
 async function syncData() {
   // 1) Lấy dữ liệu /data và cập nhật mô phỏng
@@ -423,19 +390,29 @@ async function syncData() {
     if (!res.ok) throw new Error(res.status);
     const d = await res.json();
     // Cập nhật requestedSpeed (có thể cập nhật thêm state khác nếu cần)
-    requestedSpeed = d.requestedSpeed || requestedSpeed;
+    duty = d.duty || duty;
+     // 3) Chỉ đổi hướng khi direction thay đổi
+    if (d.direction != roadDirection) {
+      if (d.direction == 1) {
+        turnRight();
+      } else if (d.direction == -1) {
+        turnLeft();
+      }
+      roadDirection = d.direction;
+    }
     simulateAndUpdateUI();
   } catch (err) {
     console.error('fetch /data error:', err);
   }
 
   // 2) Chuẩn bị dữ liệu để gửi về /save-data
+  // 2) Chuẩn bị data để gửi về /save-data
   const payload = {
-    temp: state.temperature.toFixed(2),
-    voltage: state.voltage.toFixed(2),
-    current: state.current.toFixed(2),
-    torque: state.torque.toFixed(2),
-    currentSpeed: (Math.abs(state.speed) / motorParams.maxSpeed * 120).toFixed(2),
+    temp: toAdc(state.tcoil, 200),
+    voltage: toAdc(state.vsup, 60),
+    current: toAdc(state.current, 50),
+    torque: toAdc(state.torque, 120),
+    rpm: state.rpm.toFixed(0),
     can: canData,
   };
 

@@ -512,6 +512,30 @@ E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_Act
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.c.s
 .PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.c.s
 
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.obj: E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.obj
+
+# target to build an object file
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj
+
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.i: E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.i
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.i
+
+# target to preprocess a source file
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.i
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.i
+
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.s: E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.s
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.s
+
+# target to generate assembly for a file
+E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.s
+.PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.c.s
+
 E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.obj: E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.c.obj
 .PHONY : E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.obj
 
@@ -704,30 +728,6 @@ tasks/Task_10ms.c.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/tasks/Task_10ms.c.s
 .PHONY : tasks/Task_10ms.c.s
 
-tasks/Task_Can.obj: tasks/Task_Can.c.obj
-.PHONY : tasks/Task_Can.obj
-
-# target to build an object file
-tasks/Task_Can.c.obj:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/tasks/Task_Can.c.obj
-.PHONY : tasks/Task_Can.c.obj
-
-tasks/Task_Can.i: tasks/Task_Can.c.i
-.PHONY : tasks/Task_Can.i
-
-# target to preprocess a source file
-tasks/Task_Can.c.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/tasks/Task_Can.c.i
-.PHONY : tasks/Task_Can.c.i
-
-tasks/Task_Can.s: tasks/Task_Can.c.s
-.PHONY : tasks/Task_Can.s
-
-# target to generate assembly for a file
-tasks/Task_Can.c.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\ecu_sim.dir\build.make CMakeFiles/ecu_sim.dir/tasks/Task_Can.c.s
-.PHONY : tasks/Task_Can.c.s
-
 tasks/Task_Com.obj: tasks/Task_Com.c.obj
 .PHONY : tasks/Task_Com.obj
 
@@ -809,6 +809,9 @@ help:
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.obj
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.i
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.s
+	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.obj
+	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.i
+	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_EcuState/Swc_EcuState.s
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.obj
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.i
 	@echo ... E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.s
@@ -833,9 +836,6 @@ help:
 	@echo ... tasks/Task_10ms.obj
 	@echo ... tasks/Task_10ms.i
 	@echo ... tasks/Task_10ms.s
-	@echo ... tasks/Task_Can.obj
-	@echo ... tasks/Task_Can.i
-	@echo ... tasks/Task_Can.s
 	@echo ... tasks/Task_Com.obj
 	@echo ... tasks/Task_Com.i
 	@echo ... tasks/Task_Com.s

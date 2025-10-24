@@ -3,6 +3,7 @@
 
 #include "Std_Types.h"
 #include "Rte_Types.h"
+//#include "Ecu_Types.h"
 
 /* ===== Lifecycle ===== */
 void Rte_Init(void);
@@ -12,10 +13,20 @@ void Rte_Run_10ms_Batch();
 
 /* ===== COM → RTE: chỉ có EngineSpeed (rpm) ===== */
 /* COM gọi hook này sau khi decode PDU EngineSpeed */
-void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc);
+void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc); /* Com gọi để gửi EngineSpeed (mảng 8 byte) lên Rte */
+
+/* ===== COM → RTE: VcuCmd (rpm + rotation + stopRequest) ===== */
+/* COM decode PDU VCU và gọi hàm này để cập nhật buffer VcuCmd trong RTE. */
+void Rte_Com_Update_VcuCmdFromPdu(const uint8_t* data, uint8_t dlc); /* Com gọi để gửi VcuCmd lên Rte */
+
+//Std_ReturnType Rte_Write_VcuCmdIn_PPort_VcuCmd(VcuCmd_s v);  /* Com gọi */
+//Std_ReturnType Rte_Read_VcuCmdIn_RPort_VcuCmd(VcuCmd_s* v);  /*dùng để theo dõi freshness bên trong Swc_VcuCmdIn. */
+
+/* SR buffer cho VcuCmd từ COM */
+//Std_ReturnType Rte_Read_MotorCtrl_RPort_VcuCmd(VcuCmd_s* v);
 
 /* SR buffer cho EngineSpeed từ COM */
-Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm); //gọi nội bộ trong RTE để cập nhật local buffer
+Std_ReturnType Rte_Write_Com_PPort_EngineSpeed(uint16 rpm);      //gọi nội bộ trong RTE để cập nhật local buffer
 Std_ReturnType Rte_Read_MotorCtrl_RPort_EngineSpeed(uint16* rpm);
 
 /* ===== SR: Meas (MotorFbAcq → MotorCtrl) ===== */

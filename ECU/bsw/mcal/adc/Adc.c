@@ -22,11 +22,11 @@ uint16 Adc_ReadChannel(uint8 channelId){
     const char* k = key_of(channelId);
     int v = 0;
     if(!k || csv_getInt(k, &v) != 0){
-        //printf("[ADC] Read ch=%u FAILED\n", (unsigned)channelId);
+        printf("[ADC] Read ch=%u FAILED\n", (unsigned)channelId);
         return 0u;
     }
     if(v < 0) v = 0;
     if(v > 65535) v = 65535;
-    //printf("[ADC] Read ch=%u key=%s value=%d\n", (unsigned)channelId, k, v);
+    printf("[ADC] Read ch=%u key=%s value=%d\n", (unsigned)channelId, k, v);
     return (uint16)v;
 }

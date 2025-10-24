@@ -6,44 +6,44 @@
 static volatile uint16  s_engineSpeedRpm     = 0u;
 static volatile boolean s_engineSpeedUpdated = FALSE;
 
-static const uint16 MAX_RPM = 924;
-static const uint8 MAX_KMH = 75;
 
 /* decode mã CAN thành giá trị thực tế */
+void Com_Init(){
+    /* Gọi PduR_Init() và Can_Init() -> in log */
+    
+    printf("[Com module] : Initialized\n");
+}
 static void Com_Unpack_EngineSpeed(const uint8* data, uint8 dlc)
 {
     if (dlc < 2u) {
         printf("[Com] EngineSpeed: DLC=%u < 2 -> bỏ\n", (unsigned)dlc);
         return;
     }
-    /* Big-endian (Motorola): rpm = (data[0] << 8) | data[1] */
-    uint16 raw = (uint16)((((uint16)data[2]) << 8) | ((uint16)data[1])); 
+    /* Big-endian (Motorola): rpm = (data[2] << 8) | data[1] */
 
-    uint16 kmh = raw/100;
-    
-    if(kmh > MAX_KMH) kmh = MAX_KMH;
+    //Little-engian -> decode raw speed từ mảng 8 byte thô từ Can
+    uint16 rpm = (uint16)((((uint16)data[2]) << 8) | ((uint16)data[1]));
 
-    uint16 rpm = (MAX_RPM * kmh) / MAX_KMH;
-    //cập nhật vào buffer sẵn sàng dể Rte sử dụng
     s_engineSpeedRpm = rpm;
     s_engineSpeedUpdated = TRUE;
 
-    printf("[Com] EngineSpeed unpack: %u rpm (bytes %02X %02X)\n",
-           (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
+    printf("[Com] EngineSpeed unpack: %u rpm(bytes %02X %02X)\n",
+           (unsigned)rpm,(unsigned)data[0], (unsigned)data[1]);
 }
 
 /* Xác định CAN ID tương ứng với loại dữ liệu cần xử lý */
 void Com_RxIndication(PduIdType pduId, const uint8* data, uint8 dlc)
 {
     if (pduId == PDU_ENGINE_SPEED) {
-        /* 1) Đẩy thẳng lên RTE (data[0]=MSB, data[1]=LSB) */
-        Rte_Com_Update_EngineSpeedFromPdu(data, dlc);
+            /* 1) Đẩy thẳng lên RTE (data[0]=MSB, data[1]=LSB) */
+            Rte_Com_Update_EngineSpeedFromPdu(data, dlc);
 
-        /* 2) (tuỳ chọn) vẫn giải mã nội bộ để Com_EngineSpeed() dùng */
-        Com_Unpack_EngineSpeed(data, dlc);
+            /* 2) (tuỳ chọn) vẫn giải mã nội bộ để Com_EngineSpeed() dùng */
+            //Com_Unpack_EngineSpeed(data, dlc);
 
-        printf("[Com] RxIndication: PDU_ENGINE_SPEED → RTE + legacy buffer\n");
-        /* (nếu có notification khác, gọi thêm ở đây) */
+            printf("[Com] RxIndication: PDU_ENGINE_SPEED → RTE + legacy buffer\n");
+            /* (nếu có notification khác, gọi thêm ở đây) */
+            
     } else {
         printf("[Com] RxIndication: pduId=%u không hỗ trợ\n", (unsigned)pduId);
     }

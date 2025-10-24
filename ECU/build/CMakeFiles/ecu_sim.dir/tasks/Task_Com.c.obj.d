@@ -23,4 +23,5 @@ CMakeFiles/ecu_sim.dir/tasks/Task_Com.c.obj: \
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h \
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_Types.h \
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/ecua/iohwab/IoHwAb.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_batch.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_batch.h \
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/mcal/can/Can.h

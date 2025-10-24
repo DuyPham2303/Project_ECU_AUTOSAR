@@ -67,14 +67,13 @@ static OsTaskCtl s_task[TASK_COUNT] =
         [Task_10ms_ID] = {.entry = Task_10ms, .name = "Task_10ms"},
         [Task_100ms_ID] = {.entry = Task_100ms, .name = "Task_100ms"},
         [Task_Com_ID] = {.entry = Task_Com, .name = "Task_Com"},
-        [Task_Can_ID] = {.entry = Task_Can, .name = "Task_Can"},
 };
 
 /* Cleanup đảm bảo PostTaskHook + running=0 luôn được gọi kể cả khi pthread_exit() */
 static void OS_TaskCleanup(void *arg)
 {
     OsTaskCtl *const tc = (OsTaskCtl *)arg;
-    PostTaskHook(); /* gọi hook hậu-task */
+    //PostTaskHook(); /* gọi hook hậu-task */
     pthread_cond_destroy(&tc->cv);
     pthread_mutex_destroy(&tc->mtx);
     atomic_store(&tc->running, 0); /* đánh dấu task đã kết thúc (cho phép kích lại) */
@@ -91,7 +90,7 @@ static void *OS_TaskTrampoline(void *arg)
     pthread_cleanup_push(OS_TaskCleanup, tc); // đăng ký hàm dọn dẹp, sẽ chạy khi thread kết thúc bất thường.
 
     // con trỏ hàm để gọi ra task sẽ khởi tạo (Init)
-    PreTaskHook();
+    //PreTaskHook();
     tc->entry();            /* Thân TASK(...) do app định nghĩa */
     pthread_cleanup_pop(1); /* 1 = thực thi cleanup ngay lúc pop */
     return NULL;
@@ -137,7 +136,6 @@ StatusType ActivateTask(TaskType t) //
         (void)pthread_mutex_init(&tc->mtx, NULL);
         (void)pthread_cond_init(&tc->cv, NULL);
         tc->events = 0;
-        // printf("task count: %d\n",++counter);
         const int rc = pthread_create(&tc->thread, NULL, OS_TaskTrampoline, tc);
         if (rc != 0)
         {
@@ -157,7 +155,7 @@ StatusType ActivateTask(TaskType t) //
 StatusType TerminateTask(void)
 {
     pthread_exit(NULL); /* sẽ kích hoạt OS_TaskCleanup() */
-    PostTaskHook();
+    //PostTaskHook();
     return E_OK; /* unreachable (giữ prototype) */
 }
 
@@ -241,18 +239,13 @@ static void *OS_AlarmThread(void *arg)
         /* Ánh xạ alarm → task chu kỳ tương ứng */
         switch (a->id)
         {
-        case Alarm_10ms:
-            // printf("[Os] :Alarm thread 10ms\n");
-            //(void)ActivateTask(Task_10ms_ID);
-            break;
         case Alarm_100ms:
-            // printf("[Os] :Alarm thread 100ms\n");
-            //(void)ActivateTask(Task_100ms_ID);
-            //(void)ActivateTask(Task_Can_ID);
+            //(void)ActivateTask(Task_10ms_ID);
             break;
         case Alarm_500ms:
             (void)ActivateTask(Task_10ms_ID);
-            (void)ActivateTask(Task_Can_ID);
+            (void)ActivateTask(Task_Com_ID);
+            break;
         default:
             /* Không hỗ trợ alarm khác trong bản tối giản */
             break;
@@ -326,13 +319,10 @@ StatusType StartOS(uint8_t appMode)
     }
 
     /* Hook khởi động (app có thể in log) */
-    StartupHook();
+    //StartupHook();
 
     /* Autostart: InitTask */
     (void)ActivateTask(InitTask_ID);
-
-    /* Khởi tạo sẵn và đợi event để xử lý*/
-    (void)ActivateTask(Task_Com_ID);
 
     /* Vòng “idle” giữ process sống trong mô phỏng */
     for (;;)
