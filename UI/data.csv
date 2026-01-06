@@ -1,8 +1,8 @@
 temp,512
-voltage,357
-current,127
-torque,171
-rpm,54
-duty,10
+voltage,0
+current,112
+torque,0
+rpm,0
+duty,1
 direction,1
-can,0x3F0 8 03 20 03 00 00 00 00 00
+can,0x3F0 8 04 00 00 00 00 00 00 00

@@ -8,7 +8,7 @@ static inline uint16 clamp_u16(uint16 v, uint16 max) {
     const uint16 MAX_RPM = 924;
     uint16 duty = (max * v)/ MAX_RPM;
     duty = (v > MAX_RPM) ? max : duty; 
-    return duty;
+    return duty ? duty : 1;
 }
 
 #ifndef LOG_DEBUG

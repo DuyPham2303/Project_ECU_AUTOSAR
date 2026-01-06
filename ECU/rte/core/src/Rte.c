@@ -124,7 +124,6 @@ Std_ReturnType Rte_Call_MotorFbAcq_RPort_SensorIf_ReadAll(Meas_s* m)
     uint16 raw;
     float  fval;
 
-    /* Read all sensor values */
     if (IoHwAb_ReadTemp(&raw, &fval)    != E_OK) ret = E_NOT_OK; else m->temp_C    = fval;
     if (IoHwAb_ReadVoltage(&raw, &fval) != E_OK) ret = E_NOT_OK; else m->voltage_V = fval;
     if (IoHwAb_ReadCurrent(&raw, &fval) != E_OK) ret = E_NOT_OK; else m->current_A = fval;
@@ -134,7 +133,6 @@ Std_ReturnType Rte_Call_MotorFbAcq_RPort_SensorIf_ReadAll(Meas_s* m)
         uint16 rpm_val = 0u;
         if (IoHwAb_ReadRpm(&rpm_val) != E_OK) ret = E_NOT_OK; else m->rpm = rpm_val;
     }
-    
     return ret;
 }
 
