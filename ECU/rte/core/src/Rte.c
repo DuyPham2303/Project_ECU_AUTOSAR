@@ -1,7 +1,9 @@
 #include "Rte.h"
+#include "Com.h"
 #include <stdio.h>
 #include <string.h>
 #include "IoHwAb.h"
+
 /* ================== SR Buffers & Flags ================== */
 
 /* EngineSpeed từ COM (rpm) */
@@ -16,8 +18,6 @@ static boolean s_MeasUpdated       = FALSE;
 static ActuatorCmd_s s_ActuatorCmd = {0};
 static boolean       s_ActCmdUpd   = FALSE;
 
-const uint8 maxKmh = 75;
-const uint16_t maxRpm = 924;
 
 /* ================== Lifecycle ================== */
 void Rte_Init(void)
@@ -38,24 +38,25 @@ void Rte_Init(void)
  * PDU EngineSpeed: big-endian ở 2 byte đầu
  * Byte0 = MSB, Byte1 = LSB  → rpm = (B0<<8)|B1
  */
-void Rte_Com_Update_EngineSpeedFromPdu(const uint8* data, uint8 dlc)
+static void Rte_Com_Update_EngineSpeedFromPdu(uint16 rpm)
 {
-    if (!data || dlc < 2u) {
-        printf("[RTE] EngineSpeedFromPdu: DLC=%u <2 -> bỏ\n", (unsigned)dlc);
-        return;
-    }
-    uint16 raw_kmh = (uint16)((((uint16)data[2]) << 8) | (uint16)data[1]);
-
-    double kmh = raw_kmh / 100.0;
-
-    if(kmh > maxKmh) kmh = maxKmh;
-
-    uint16 rpm = ((uint8)kmh * maxRpm ) / maxKmh;  
-
     //ghi vào nội bộ RTE -> Cho phép các Swc truy cập thông qua SR interface
     (void)Rte_Write_Com_PPort_EngineSpeed(rpm);
-    printf("[RTE] EngineSpeedFromPdu: rpm=%u kmh = %u (bytes %02X %02X)\n",
-           (unsigned)rpm, (unsigned)kmh,(unsigned)data[0], (unsigned)data[1]);
+    printf("[RTE] EngineSpeedFromPdu: rpm=%u\n",
+           rpm);
+}
+
+
+/* Task Com gọi mỗi khi có RX event để map signal -> RTE buffer nội bộ */
+void Rte_Com_RxBatch(){
+    uint16 rpm;
+    if(Com_EngineSpeed(&rpm) == E_OK){
+        printf("rpm available = %u -> map to RTE buffers\n",rpm);
+        Rte_Com_Update_EngineSpeedFromPdu(rpm); //cập nhật vào buffer nio65 bộ
+    }
+    else{
+        printf("Rpm unavailable\n");
+    }
 }
 
 /* ================== SR: EngineSpeed (COM → MotorCtrl) ================== */

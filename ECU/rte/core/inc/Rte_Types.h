@@ -5,6 +5,21 @@
 #include "IoHwAb.h" /* dùng Direction_e; map CS xuống IoHwAb */
 
 /* ===== Data contract còn dùng ===== */
+/* Rotational intent from VCU */
+typedef enum
+{
+    ROT_STOP = 0,
+    ROT_CW = 1,
+    ROT_CCW = 2
+} Rotation_e;
+
+/* VCU command snapshot */
+typedef struct
+{
+    uint16 TargetSpeed_RPM; /* 0..65535 */
+    Rotation_e Rotation;    /* STOP/CW/CCW */
+    uint8 StopReq;          /* 0/1 */
+} VcuCmd_s;
 
 /* Đo lường tổng hợp (MotorFbAcq publish) */
 typedef struct

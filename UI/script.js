@@ -75,11 +75,11 @@ let target = { ...state };
 
 // --- Tính toán target mỗi khi slider thay đổi ---
 function computeTarget(duty, load) {
-  const D = duty / 100;
+  const D = duty / 100; 
   const Tload = load;
 
-  const Tmax = Tstall * D;
-  const r = Tmax > 0 ? Math.max(0, 1 - Tload / Tmax) : 0;
+  const Tmax = Tstall * D; 
+  const r = Tmax > 0 ? Math.max(0, 1 - Tload / Tmax) : 0; 
 
   const Ifric = Ifric0 + (Ifric100 - Ifric0) * D;
   const Il = Tload / Kt;
@@ -273,14 +273,18 @@ function createCanFrameSetSpeed(sentSpeed) {
   const speedValue = Math.round(sentSpeed * 100);
 
   data[0] = 0x03;              // Command ID: Set Speed
-  data[1] = speedValue & 0xFF; // Byte thấp
-  data[2] = (speedValue >> 8) & 0xFF; // Byte cao
+  data[1] = speedValue & 0xFF; // Byte speed thấp
+  data[2] = (speedValue >> 8) & 0xFF; // Byte speed cao
   // Các byte 3-7 giữ 0 mặc định
+
+  if(data[1] === 0 && data[2] === 0) {
+    data[0] = 0x04; // Command ID: Stop
+  }
 
   const idStr = canId.toString(16).padStart(3, '0').toUpperCase();
   const dataStr = [...data].map(b => b.toString(16).padStart(2, '0').toUpperCase()).join(' ');
 
-  return { id: idStr, dlc, data: dataStr, speed: sentSpeed };
+  return { id: idStr, dlc, data: dataStr, speed: sentSpeed, direction: data[3] };
 }
 let lastFrameStr = "";
 
@@ -288,7 +292,14 @@ function generateCANFrame() {
   // Truyền requestedSpeed làm tham số
   const { id, dlc, data, speed } = createCanFrameSetSpeed(sentSpeed);
   const idStr = `0x${id}`;
-  const entry = `[EVCU] ID:${idStr} | DLC:${dlc} | Data:${data}  (${speed.toFixed(2)} Km/h)`;
+  let entry = '';
+
+  if(speed > 0) {
+    entry = `[EVCU] ID:${idStr} | DLC:${dlc} | Data:${data}  (${speed.toFixed(2)} Km/h)`;
+  }
+  else {
+    entry = `[EVCU] ID:${idStr} | DLC:${dlc} | Data:${data} {Stop}` ;
+  }
 
   if (entry !== lastFrameStr) {
     lastFrameStr = entry;
@@ -314,9 +325,6 @@ speedSlider.addEventListener('input', () => {
     debounceTimeout = null;
   }, 1000);
 });
-
-
-
 
 function sendCanCode() {
   const input = document.getElementById('can-code');
@@ -362,10 +370,26 @@ function sendCanCode() {
   const data = dataBytes.map(b => b.toUpperCase()).join(' ');
 
 
-  const entry = `[EVCU] ID:${id} | DLC:${dlcVal} | Data:${data} {Stop}`;
+  if(dataBytes[0] !== '03' && dataBytes[0] !== '04') {
+    alert('Chức năng hiện tại chỉ hỗ trợ mã lệnh Set Speed (03) và Stop (04).');
+    return false;
+  }
+
+  let entry = '';
+
+  if(dataBytes[0] === '03') {
+    const speedLow = parseInt(dataBytes[1], 16);
+    const speedHigh = parseInt(dataBytes[2], 16);
+    const speedValue = speedLow + (speedHigh << 8);
+    sentSpeed = speedValue / 100;
+    entry = `[EVCU] ID:${id} | DLC:${dlc} | Data:${data} (${sentSpeed.toFixed(2)} Km/h)`;
+  }
+
+  else {
+    entry = `[EVCU] ID:${id} | DLC:${dlc} | Data:${data} {Stop}` ;
+  }  
 
   canData = `${id} ${dlc} ${data}`;
-
 
   const d = document.createElement("div");
   d.textContent = entry;

@@ -11,6 +11,106 @@ static inline uint16 clamp_u16(uint16 v, uint16 max) {
     return duty;
 }
 
+#ifndef LOG_DEBUG
+#define LOG_DEBUG(...) printf(__VA_ARGS__)
+#endif
+
+/* ----- Error monitoring thresholds (system values) ----- */
+#define VOLTAGE_NOMINAL_V 60.0f
+#define VOLTAGE_MIN_V     (VOLTAGE_NOMINAL_V * 0.8f)  /* ~48 V */
+#define VOLTAGE_MAX_V     (VOLTAGE_NOMINAL_V * 1.10f) /* ~66 V */
+
+#define CURRENT_RATED_A   20.0f
+#define CURRENT_PEAK_A    32.5f
+
+#define TORQUE_MAX_NM     120.0f
+#define TEMP_MAX_C        155.0f
+
+#define RPM_MAX_ALLOWED   924u   /* top speed (75 km/h) */
+#define RPM_MAX_CRITICAL  1000u  /* above this -> critical */
+
+/**
+ * @brief Kiểm tra các giá trị đo (Meas_s) và gửi lỗi lên Swc_EcuState.
+ *
+ * Đặt cờ lỗi thông qua RecordError(...) và kích hoạt event tương ứng
+ * bằng TriggerEventStateEcu(...).
+ */
+static void CheckAndReportErrors(const Meas_s* m)
+{
+    // Chuẩn bị cấu trúc lỗi cảm biến để ghi lên Swc_EcuState (mặc định NORMAL)
+    SensorErrorFlag err = { .VoltageError = NORMAL,
+                            .CurrentError = NORMAL,
+                            .TorqueError = NORMAL,
+                            .TempError = NORMAL,
+                            .RpmError = NORMAL };
+
+    // Cờ để theo dõi có lỗi nào được phát hiện không (mặc định FALSE)
+    boolean anyError = FALSE; // có lỗi cảm biến
+    boolean critical = FALSE; // có lỗi nghiêm trọng
+
+    // Kiểm tra từng giá trị cảm biến và đặt cờ lỗi tương ứng
+    /* Kiểm tra điện áp so với ngưỡng Undervoltage / Overvoltage */
+
+    if (m->voltage_V < VOLTAGE_MIN_V) {
+        err.VoltageError = TOO_LOW; anyError = TRUE;
+        /* undervoltage close to shutdown -> critical if far below */
+        if (m->voltage_V < (VOLTAGE_MIN_V - 5.0f)) {
+            critical = TRUE;
+        }
+    } else if (m->voltage_V > VOLTAGE_MAX_V) {
+        err.VoltageError = TOO_HIGH; anyError = TRUE;
+        if (m->voltage_V > (VOLTAGE_MAX_V + 5.0f)) { /* margin -> critical */
+            critical = TRUE;
+        }
+    }
+
+    /* Temperature */
+    if (m->temp_C > TEMP_MAX_C) {
+        err.TempError = TOO_HIGH; anyError = TRUE; critical = TRUE;
+    } else if (m->temp_C > (TEMP_MAX_C - 10.0f)) {
+        err.TempError = TOO_HIGH; anyError = TRUE; /* near limit, warn */
+    }
+
+    /* Current */
+    if (m->current_A > CURRENT_RATED_A) {
+        err.CurrentError = TOO_HIGH; anyError = TRUE;
+        if (m->current_A > CURRENT_PEAK_A) {
+            critical = TRUE;
+        }
+    }
+
+    /* Torque */
+    if (m->torque_Nm > TORQUE_MAX_NM) {
+        err.TorqueError = TOO_HIGH; anyError = TRUE;
+        if (m->torque_Nm > (TORQUE_MAX_NM * 1.2f)) {
+            critical = TRUE;
+        }
+    }
+
+    /* RPM */
+    if (m->rpm > RPM_MAX_ALLOWED) {
+        err.RpmError = OUT_OF_BOUND; anyError = TRUE;
+        if (m->rpm > RPM_MAX_CRITICAL) {
+            critical = TRUE;
+        }
+    }
+
+    /* publish to ECU state manager */
+    RecordError(err);
+
+    if (critical) {
+        LOG_DEBUG("[MotorCtrl] Critical error detected -> CRITICAL_ERROR\n");
+        TriggerEventStateEcu(CRITICAL_ERROR);
+    } else if (anyError) {
+        LOG_DEBUG("[MotorCtrl] Sensor error detected -> SENSOR_ERROR\n");
+        TriggerEventStateEcu(SENSOR_ERROR);
+    } else {
+        /* no errors -> signal resolved */
+        LOG_DEBUG("[MotorCtrl] All sensors normal -> ERROR_RESOLVED\n");
+        TriggerEventStateEcu(ERROR_RESOLVED);
+    }
+}
+
 
 void Swc_MotorCtrl_Init(void)
 {
@@ -37,30 +137,13 @@ void Swc_MotorCtrl_Run10ms(void)
     //đọc rpm từ cảm biến 
     (void)Rte_Read_Meas(&meas);           /* có thể dùng để bảo vệ/giới hạn */
 
+    /* Kiểm tra và gửi lỗi sang Swc_EcuState (demo) */
+    CheckAndReportErrors(&meas);
+
     //tạo gói dữ liệu -> publish cho Swc_ActuatorIf
     ActuatorCmd_s out;
     
     out.dir = DIR_FWD;  //giả sử dir mặc định motor quay thuận chiều 
-
-    // if(/* Lỗi nhẹ từ cảm biến ví dụ Timeout 100ms, VcuCmd chưa được update*/){
-    //     //xử lý gán Duty = 0 , Dir = NEU -> đảm bảo động cơ không xử lý tín hiệu lỗi
-    // }
-    // else if(/*dòng , áp vượt ngưỡng mềm*/){
-    //     //giảm dần duty để điều chỉnh lại dòng , áp
-
-    //     //Gán thông tin lỗi và set event để kích hoạt statemachine chuyển đến
-    //     SensorErrorFlag flag = {.CurrentError = TOO_HIGH,
-    //                             .VoltageError = TOO_HIGH};
-    //     TriggerEventStateEcu(SENSOR_ERROR);
-    //     RecordError(flag);
-    // }
-    // else if(/*dòng, áp,  vượt ngưỡng cứng */){
-    //     //cắt hoàn toàn duty để bảo vệ động cơ không bị hư hại
-    // }
-    // else if(/* Tốc độ quá lớn -> không cho phép đổi chiều */){
-    //     //cập nhật Dir nếu tốc dộ hợp lệ
-    // }
-
 
     /* map đơn giản để demo (bạn thay bằng luật thật của mình) */
     out.duty_pct = clamp_u16(rpm_com,100u);    //clamp duty 0 - 100

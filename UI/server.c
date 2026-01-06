@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include <unistd.h> // close(), read(), write(), sleep()
 #include <errno.h>
-#include <pthread.h> // thread_create, pthread_t
+#include <pthread.h> // pthread_create, pthread_t
 #include <sys/types.h>
 #include <winsock2.h>
 #include <ws2tcpip.h>

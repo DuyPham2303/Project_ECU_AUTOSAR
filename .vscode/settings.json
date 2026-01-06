@@ -116,8 +116,9 @@
         "ecu_types.h": "c",
         "bswm.h": "c",
         "rte_batch.h": "c",
-        "swc_ecustate.h": "c"
+        "swc_ecustate.h": "c",
+        "canif.h": "c"
     },
-    "cmake.sourceDirectory": "E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/app",
+    "cmake.sourceDirectory": "E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/app",
     "CodeGPT.apiKey": "CodeGPT Plus Beta"
 }

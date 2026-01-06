@@ -2,48 +2,72 @@
 #define SWC_ECUSTATE_H
 #include "Std_Types.h"
 
-//enum lưu trữ các biến statemachine
+/**
+ * @enum ECU_State
+ * @brief Các trạng thái của ECU state machine.
+ */
 typedef enum {
-    STATE_INIT,             //trạng thái khởi tạo hệ thống (cảm biến,actuator)
-    STATE_NORMAL,           //trạng thái bình thường (đọc cảm biến -> tính toán -> điều khiển motor) và kiểm tra lỗi
-    STATE_ERROR_HANDLING,   //trạng thái xử lý lỗi
-    STATE_EMERGENCY_STOP,   //trạng thái tắt hệ thống khẩn cấp tự động
-    STATE_SHUTDOWN          //trạng thái tắt hệ thống (bởi người dùng)
-}ECU_State;
+    STATE_INIT,             /**< Khởi tạo hệ thống (cảm biến, actuator) */
+    STATE_NORMAL,           /**< Bình thường: đọc cảm biến -> tính toán -> điều khiển */
+    STATE_ERROR_HANDLING,   /**< Xử lý lỗi (khôi phục hoặc chuyển khẩn cấp) */
+    STATE_EMERGENCY_STOP,   /**< Dừng khẩn cấp (tự động) */
+    STATE_SHUTDOWN          /**< Tắt hệ thống (bởi người dùng) */
+} ECU_State;
 
-//Sự kiện kích hoạt chuyển đổi các statemachine của ECU
-typedef enum{ 
-    SYSTEM_OK,      
-    SENSOR_ERROR,    
-    ERROR_RESOLVED, 
+/**
+ * @enum EventEcuStateType
+ * @brief Sự kiện kích hoạt chuyển đổi trạng thái ECU.
+ */
+typedef enum {
+    SYSTEM_OK,
+    SENSOR_ERROR,
+    ERROR_RESOLVED,
     CRITICAL_ERROR,
-    IGINITION_OFF,  
-    RESTART    
-}EventEcuStateType;
+    IGNITION_OFF, /**< Khóa đánh lửa tắt / người dùng tắt xe */
+    RESTART
+} EventEcuStateType;
 
-//enum xác định ngưỡng giá trị để phân loại theo từng loại lỗi nhe/nghiệm trong
-typedef enum{
-    NORMAL,         
+/**
+ * @enum ErrorCode
+ * @brief Mức độ lỗi cảm biến.
+ */
+typedef enum {
+    NORMAL,
     TOO_HIGH,
     TOO_LOW,
     OUT_OF_BOUND,
-}ErrorCode;
+} ErrorCode;
 
-typedef struct{
+// Cấu trúc lưu trạng thái lỗi cảm biến 
+typedef struct {
     ErrorCode VoltageError;
     ErrorCode CurrentError;
     ErrorCode TorqueError;
     ErrorCode TempError;
     ErrorCode RpmError;
-}SensorErrorFlag;
+} SensorErrorFlag;
 
-//hàm quản lý trạng thái hệ thống gọi bởi Task_EcuState
+/**
+ * @brief State machine chính của ECU. Gọi theo chu kỳ (ví dụ 10ms).
+ */
 void Swc_EcuStateMachine(void);
 
-//hàm để kích hoạt event gọi bởi các Swc 
-void TriggerEventStateEcu(EventEcuStateType EventType); /* Loại event kích hoạt chuyển đổi statemachine */
+/**
+ * @brief Kích hoạt event để state machine xử lý.
+ * @param EventType kiểu event (EventEcuStateType)
+ */
+void TriggerEventStateEcu(EventEcuStateType EventType);
 
-/*Hàm xác định tín hiệu cụ thể gây lỗi*/
+/**
+ * @brief Lưu lại cờ lỗi cảm biến hiện thời.
+ * @param flag cấu trúc SensorErrorFlag chứa trạng thái lỗi từng loại.
+ */
 void RecordError(SensorErrorFlag flag);
-ECU_State Get_EcustateMachine();
+
+/**
+ * @brief Trả về trạng thái hiện tại của state machine.
+ * @return Giá trị ECU_State hiện thời.
+ */
+ECU_State Get_EcustateMachine(void);
+
 #endif

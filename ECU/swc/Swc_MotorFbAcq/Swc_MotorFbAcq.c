@@ -1,5 +1,6 @@
 #include "Swc_MotorFbAcq.h"
 #include "Rte_Swc_MotorFbAcq.h"
+#include "csv_io.h"
 #include <stdio.h>
 
 void Swc_MotorFbAcq_Init(void)
@@ -24,6 +25,7 @@ void Swc_MotorFbAcq_Run10ms(void)
         (void)Rte_Write_Meas(m);
         printf("[Swc_MotorFbAcq] Meas: T=%.1fC V=%.1fV I=%.1fA τ=%.1fNm rpm=%u\n",
                m.temp_C, m.voltage_V, m.current_A, m.torque_Nm, (unsigned)m.rpm);
+        
     } else {
         printf("[Swc_MotorFbAcq] SensorIf_ReadAll FAIL\n");
     }

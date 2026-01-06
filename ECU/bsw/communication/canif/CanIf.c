@@ -1,6 +1,17 @@
 #include "CanIf.h"
+#include "Can.h"
 #include "PduR.h"
 #include <stdio.h>
+
+void CanIf_Init(){
+    /* Trước hết khởi MCAL CAN driver với cấu hình Can_Config */
+    Can_Init(); //Khởi tạo tối giản - in log 
+
+
+    /* Tại đây có thể cấu hình filter hardware, danh sách PDU, v.v. */
+
+    printf("[CanIf] Initialized (filter IDs: 0x3F0)\n"); 
+}
 
 Std_ReturnType CanIf_Receive(uint32 canId, const uint8* data, uint8 dlc)
 {

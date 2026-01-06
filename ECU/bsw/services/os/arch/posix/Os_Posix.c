@@ -65,7 +65,6 @@ static OsTaskCtl s_task[TASK_COUNT] =
     {
         [InitTask_ID] = {.entry = InitTask, .name = "InitTask"},
         [Task_10ms_ID] = {.entry = Task_10ms, .name = "Task_10ms"},
-        [Task_100ms_ID] = {.entry = Task_100ms, .name = "Task_100ms"},
         [Task_Com_ID] = {.entry = Task_Com, .name = "Task_Com"},
 };
 
@@ -78,6 +77,7 @@ static void OS_TaskCleanup(void *arg)
     pthread_mutex_destroy(&tc->mtx);
     atomic_store(&tc->running, 0); /* đánh dấu task đã kết thúc (cho phép kích lại) */
     tc->thread = (pthread_t)NULL;  /* reset địa chỉ của task Os cần chạy lại */
+    (void)TerminateTask();
 }
 
 /* Trampoline: gọi PreTaskHook → entry → đảm bảo cleanup */
@@ -111,9 +111,8 @@ typedef struct
 static OsAlarmCtl s_alarm[ALARM_COUNT] =
     {
         [Alarm_10ms] = {.id = Alarm_10ms},
-        [Alarm_100ms] = {.id = Alarm_100ms},
-        [Alarm_500ms] = {.id = Alarm_500ms},
-};
+        [Alarm_100ms] = {.id = Alarm_100ms}
+    };
 
 /* ****************************************************************************************
  * API: TASK
@@ -239,12 +238,11 @@ static void *OS_AlarmThread(void *arg)
         /* Ánh xạ alarm → task chu kỳ tương ứng */
         switch (a->id)
         {
-        case Alarm_100ms:
-            //(void)ActivateTask(Task_10ms_ID);
-            break;
-        case Alarm_500ms:
+        case Alarm_10ms:
             (void)ActivateTask(Task_10ms_ID);
-            (void)ActivateTask(Task_Com_ID);
+            break;
+        case Alarm_100ms:
+            (void)ActivateTask(Task_100ms_ID);
             break;
         default:
             /* Không hỗ trợ alarm khác trong bản tối giản */
@@ -319,7 +317,7 @@ StatusType StartOS(uint8_t appMode)
     }
 
     /* Hook khởi động (app có thể in log) */
-    //StartupHook();
+    StartupHook();
 
     /* Autostart: InitTask */
     (void)ActivateTask(InitTask_ID);

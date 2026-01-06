@@ -90,6 +90,9 @@ void Can_MainFunction_Read(void)
     for (uint8 i = 0; i < dlc; i++) printf("%02X ", data[i]);
     printf("\n");
 
-    //gửi dữ liệu đã parsed không cần đóng gói theo kiểu Pdu -> do chỉ có 1 protocol là Can
-    (void)CanIf_Receive(id, data, dlc);    
+    /* 
+        - lớp phân phối, xác định frame hiện tại thuộc PDU nào
+        - chịu trách nhiệm giao đúng gói dữ liệu cho tầng trên
+    */
+    (void)CanIf_Receive(id, data, dlc);  //xử lý chuyên biệt cho giao thức CAN
 }

@@ -11,7 +11,9 @@
 typedef uint16 PduIdType;
 #define PDU_ENGINE_SPEED     ((PduIdType)0) //quy đổi thành kiểu tiêu chuẩn mà không cần quan tầm protocol cụ thể
 
-/* API theo tài liệu */
+/* gọi Can_Init */
+void CanIf_Init();
+/* phân loại gói, xác định PduId tương ứng */
 Std_ReturnType CanIf_Receive(uint32 canId, const uint8* data, uint8 dlc);
 
 #endif /* CANIF_H */

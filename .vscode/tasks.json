@@ -1,6 +1,5 @@
 {
     "version": "2.0.0",
-    //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
     "tasks": [
         {
             "type": "cppbuild",
@@ -27,6 +26,7 @@
             },
             "detail": "compiler: C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
         },
+        //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
         {
             "label": "CMake Configure",
             "type": "shell",
