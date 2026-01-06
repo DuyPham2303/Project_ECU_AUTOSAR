@@ -137,9 +137,12 @@ void Swc_MotorCtrl_Run10ms(void)
     //đọc rpm từ cảm biến 
     (void)Rte_Read_Meas(&meas);           /* có thể dùng để bảo vệ/giới hạn */
 
+<<<<<<< HEAD
     /* Kiểm tra và gửi lỗi sang Swc_EcuState (demo) */
     CheckAndReportErrors(&meas);
 
+=======
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
     //tạo gói dữ liệu -> publish cho Swc_ActuatorIf
     ActuatorCmd_s out;
     

@@ -361,12 +361,24 @@ CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU_(Final)
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/vadefs.h
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stddef.h
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stdint.h
+<<<<<<< HEAD
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/bsw/ecua/iohwab/IoHwAb.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/platform/common/Std_Types.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/rte/core/inc/Rte.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/rte/core/inc/Rte_Types.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/rte/swc_if/Rte_Swc_ActuatorIf.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.h
+=======
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/canif/CanIf.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/com/Com.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/mcal/can/Can.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/csvlib/csv_io.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_batch.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_ActuatorIf/Swc_ActuatorIf.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorCtrl/Swc_MotorCtrl.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/swc/Swc_MotorFbAcq/Swc_MotorFbAcq.h
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
 
 CMakeFiles/ecu_sim.dir/E_/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU_(Final)/ECU/swc/Swc_EcuState/Swc_EcuState.c.obj
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/swc/Swc_EcuState/Swc_EcuState.c
@@ -536,6 +548,7 @@ CMakeFiles/ecu_sim.dir/tasks/InitTask.c.obj
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/vadefs.h
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stddef.h
  C:/mingw-w64/mingw32/lib/gcc/i686-w64-mingw32/14.2.0/include/stdint.h
+<<<<<<< HEAD
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/bsw/communication/canif/CanIf.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/bsw/communication/com/Com.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/bsw/ecua/iohwab/IoHwAb.h
@@ -549,6 +562,18 @@ CMakeFiles/ecu_sim.dir/tasks/InitTask.c.obj
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/platform/common/Std_Types.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/rte/core/inc/Rte.h
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/rte/core/inc/Rte_Types.h
+=======
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/canif/CanIf.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/com/Com.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/ecua/iohwab/IoHwAb.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/ecum/EcuM.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os_Cfg.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/services/os/inc/Os_Types.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte.h
+ E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_Types.h
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
 
 CMakeFiles/ecu_sim.dir/tasks/Task_100ms.c.obj
  E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU (Final)/ECU/app/tasks/Task_100ms.c

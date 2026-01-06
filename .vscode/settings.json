@@ -111,6 +111,7 @@
         "swc_actuatorif.h": "c",
         "stdlib.h": "c",
         "pwm.h": "c",
+<<<<<<< HEAD
         "pdur.h": "c",
         "rte_swc_actuatorif.h": "c",
         "ecu_types.h": "c",
@@ -118,6 +119,9 @@
         "rte_batch.h": "c",
         "swc_ecustate.h": "c",
         "canif.h": "c"
+=======
+        "pdur.h": "c"
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
     },
     "cmake.sourceDirectory": "E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/app",
     "CodeGPT.apiKey": "CodeGPT Plus Beta"

@@ -42,6 +42,7 @@ static void Rte_Com_Update_EngineSpeedFromPdu(uint16 rpm)
 {
     //ghi vào nội bộ RTE -> Cho phép các Swc truy cập thông qua SR interface
     (void)Rte_Write_Com_PPort_EngineSpeed(rpm);
+<<<<<<< HEAD
     printf("[RTE] EngineSpeedFromPdu: rpm=%u\n",
            rpm);
 }
@@ -57,6 +58,10 @@ void Rte_Com_RxBatch(){
     else{
         printf("Rpm unavailable\n");
     }
+=======
+    printf("[RTE] EngineSpeedFromPdu: %u rpm (bytes %02X %02X)\n",
+           (unsigned)rpm, (unsigned)data[0], (unsigned)data[1]);
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
 }
 
 /* ================== SR: EngineSpeed (COM → MotorCtrl) ================== */

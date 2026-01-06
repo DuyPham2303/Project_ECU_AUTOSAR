@@ -3,6 +3,12 @@
 #include "Pwm.h"
 #include "Adc.h"
 #include "EcuM.h"
+<<<<<<< HEAD
+=======
+#include <stdio.h>
+#include <unistd.h>
+//#include "SchM.h"
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
 #include "Com.h"
 #include "Rte.h"
 #include <unistd.h>
@@ -12,6 +18,7 @@ TASK(InitTask)
     /* Hậu-OS (mở dịch vụ tối thiểu) */
     EcuM_StartupTwo();
 
+<<<<<<< HEAD
     //SchM_Init();      /* OSEK lập lịch -> ko cần trong mô phỏng ECU */
 
     /* Khởi tạo mcal */
@@ -23,6 +30,12 @@ TASK(InitTask)
     Com_Init();         
 
     /* Khởi tạo Rte */
+=======
+    /* BSW + RTE khởi động */
+    // SchM_Init();
+    Com_Init();
+    //Rte_Start();
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
     Rte_Init();
     Rte_Init_PowerOnBatch();      /* gọi *_Init của các SWC */
     //Rte_Init_ServiceBatch();      /* gọi  Rte_Dem_Init() , Rte_Dcm_Init(); -> ko cần trong mô phỏng  */

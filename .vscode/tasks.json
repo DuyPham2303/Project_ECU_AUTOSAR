@@ -26,7 +26,10 @@
             },
             "detail": "compiler: C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
         },
+<<<<<<< HEAD
         //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
+=======
+>>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
         {
             "label": "CMake Configure",
             "type": "shell",

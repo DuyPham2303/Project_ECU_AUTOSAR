@@ -9,7 +9,7 @@ static const char* key_of(uint8 ch){
         case CH_VOLTAGE: return "voltage";
         case CH_CURRENT: return "current";
         case CH_TORQUE:  return "torque";
-        case CH_RPM:     return "rpm";
+        case CH_RPM:     return "currentSpeed";
         default:         return NULL;
     }
 }
