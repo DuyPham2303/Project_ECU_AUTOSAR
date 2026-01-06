@@ -1,6 +1,7 @@
 {
     "version": "2.0.0",
     "tasks": [
+        //task build file hiện tại (file đang mở trong vscode) -> dùng cho server.c 
         {
             "type": "cppbuild",
             "label": "Build Server",
@@ -26,10 +27,7 @@
             },
             "detail": "compiler: C:\\MinGW\\msys64\\mingw64\\bin\\gcc.exe"
         },
-<<<<<<< HEAD
         //task chạy 1 lần để generate thông tin cấu hình của CMake -> tự động build ra makefile
-=======
->>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
         {
             "label": "CMake Configure",
             "type": "shell",
@@ -47,7 +45,7 @@
                 "isDefault": true
             }
         },
-    //task tự động chạy makefile để generate file thực thi 
+        //task tự động chạy makefile để generate file thực thi 
         {
             "label": "CMake Build",
             "type": "shell",
@@ -61,7 +59,7 @@
             },
             "problemMatcher": "$gcc"
         },
-    //task để chạy chương trình (.exe) tự động 
+        //task để chạy chương trình chính tự động (ecu_sim.exe) 
         {
             "label": "Run App",
             "type": "shell",
@@ -69,7 +67,7 @@
             "group": "none",
             "problemMatcher": []
         },
-    //task để xóa toàn bộ nội dung build folder
+        //task để xóa toàn bộ nội dung build folder
         {
             "label": "Clean Build Folder",
             "type": "shell",

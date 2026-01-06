@@ -33,14 +33,4 @@ CMakeFiles/ecu_sim.dir/tasks/InitTask.c.obj: \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/corecrt_startup.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/sys/types.h \
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/getopt.h \
-<<<<<<< HEAD
  C:/mingw-w64/mingw32/i686-w64-mingw32/include/pthread_unistd.h
-=======
- C:/mingw-w64/mingw32/i686-w64-mingw32/include/pthread_unistd.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/com/Com.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/platform/common/Std_Types.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/communication/canif/CanIf.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/rte/core/inc/Rte_Types.h \
- E:/HALA_Academy/Advance_C_Autosar/ECU/Project_ECU/ECU/bsw/ecua/iohwab/IoHwAb.h
->>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9

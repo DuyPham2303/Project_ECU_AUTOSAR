@@ -71,11 +71,7 @@ void Can_MainFunction_Read(void)
     while(csv_getString("can", frame_str, sizeof(frame_str)) == TRUE);
     printf("[CAN] CSV: \"%s\"\n", frame_str);
 
-<<<<<<< HEAD
     //nơi lưu trữ parsed Can frame -> 
-=======
-    //nơi lưu trữ parsed Can frame
->>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
     uint32 id = 0;
     uint8  dlc = 0;
     uint8  data[8];
@@ -101,17 +97,9 @@ void Can_MainFunction_Read(void)
     
     uint16 kmh = raw/100; 
 
-<<<<<<< HEAD
     /* 
         - lớp phân phối, xác định frame hiện tại thuộc PDU nào
         - chịu trách nhiệm giao đúng gói dữ liệu cho tầng trên
     */
     (void)CanIf_Receive(id, data, dlc);  //xử lý chuyên biệt cho giao thức CAN
-=======
-    if(kmh > MAX_KMH) kmh = MAX_KMH;
-
-    (void)csv_setInt("requestedSpeed",kmh);
-    //gửi trực tiếp parsed data không cần đóng gói theo kiểu Pdu -> do chỉ có 1 protocol
-    (void)CanIf_Receive(id, data, dlc);    
->>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
 }

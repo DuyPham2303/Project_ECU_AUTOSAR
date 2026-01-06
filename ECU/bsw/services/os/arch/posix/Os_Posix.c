@@ -239,18 +239,10 @@ static void *OS_AlarmThread(void *arg)
         switch (a->id)
         {
         case Alarm_10ms:
-<<<<<<< HEAD
             (void)ActivateTask(Task_10ms_ID);
             break;
         case Alarm_100ms:
             (void)ActivateTask(Task_100ms_ID);
-=======
-            //(void)ActivateTask(Task_10ms_ID);
-            //(void)ActivateTask(Task_Can_ID);
-            break;
-        case Alarm_100ms:
-            //(void)ActivateTask(Task_100ms_ID);
->>>>>>> 8802487a3d94ff76a59b87df7c7baeedf94db7c9
             break;
         default:
             /* Không hỗ trợ alarm khác trong bản tối giản */
